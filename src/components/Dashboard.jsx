@@ -1,74 +1,71 @@
-import * as React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-// import InboxIcon from '@mui/icons-material/MoveToInbox';
-// import MailIcon from '@mui/icons-material/Mail';
-import { useState } from 'react';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import ScheduleCalendar from './ScheduleCalendar';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-
-//import { styled } from '@mui/material/styles';
-//import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid2';
+import * as React from "react";
+import { styled, useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import MuiDrawer from "@mui/material/Drawer";
+import MuiAppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import List from "@mui/material/List";
+import CssBaseline from "@mui/material/CssBaseline";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import { useState } from "react";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import ScheduleCalendar from "./ScheduleCalendar";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid2";
+import { useAuth } from "../context/authContext";
+import { Outlet, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const drawerWidth = 240;
 
-
 const openedMixin = (theme) => ({
   width: drawerWidth,
-  transition: theme.transitions.create('width', {
+  transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
-  overflowX: 'hidden',
+  overflowX: "hidden",
 });
 
 const closedMixin = (theme) => ({
-  transition: theme.transitions.create('width', {
+  transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  overflowX: 'hidden',
+  overflowX: "hidden",
   width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
+  [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
+  transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
@@ -78,7 +75,7 @@ const AppBar = styled(MuiAppBar, {
       style: {
         marginLeft: drawerWidth,
         width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
+        transition: theme.transitions.create(["width", "margin"], {
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.enteringScreen,
         }),
@@ -87,53 +84,52 @@ const AppBar = styled(MuiAppBar, {
   ],
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    variants: [
-      {
-        props: ({ open }) => open,
-        style: {
-          ...openedMixin(theme),
-          '& .MuiDrawer-paper': openedMixin(theme),
-        },
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
+  variants: [
+    {
+      props: ({ open }) => open,
+      style: {
+        ...openedMixin(theme),
+        "& .MuiDrawer-paper": openedMixin(theme),
       },
-      {
-        props: ({ open }) => !open,
-        style: {
-          ...closedMixin(theme),
-          '& .MuiDrawer-paper': closedMixin(theme),
-        },
+    },
+    {
+      props: ({ open }) => !open,
+      style: {
+        ...closedMixin(theme),
+        "& .MuiDrawer-paper": closedMixin(theme),
       },
-    ],
-  }),
-);
+    },
+  ],
+}));
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: '#fff',
+  backgroundColor: "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: 'center',
+  textAlign: "center",
   color: theme.palette.text.secondary,
-  ...theme.applyStyles('dark', {
-    backgroundColor: '#1A2027',
+  ...theme.applyStyles("dark", {
+    backgroundColor: "#1A2027",
   }),
 }));
 
-
 const InboxComponent = () => (
-    <Typography sx={{ marginBottom: 2 }}>
-      This is the Inbox component content.
-    </Typography>
-  );
-  
+  <Typography sx={{ marginBottom: 2 }}>
+    This is the Inbox component content.
+  </Typography>
+);
+
 export default function Dashboard() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [menuItem, setMenuItem] = useState("Schedules")
+  const [menuItem, setMenuItem] = useState("Schedules");
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -143,18 +139,14 @@ export default function Dashboard() {
     setOpen(false);
   };
 
-  const [view,setView] = useState("week");
-  const calendars = [
-    {
-      id: '0',
-      name: 'Private',
-      backgroundColor: '#3f50b5',
-      borderColor: '#3f50b5',
-    }
-  ];
+
+  const { user,logout } = useAuth();
+  const handleLogout = ()=>{
+    logout();
+  }
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -167,7 +159,7 @@ export default function Dashboard() {
               {
                 marginRight: 5,
               },
-              open && { display: 'none' },
+              open && { display: "none" },
             ]}
           >
             <MenuIcon />
@@ -175,102 +167,134 @@ export default function Dashboard() {
           <Typography variant="h6" noWrap component="div">
             Booking App
           </Typography>
+          <Button onClick={handleLogout} variant="contained" color="error">Logout</Button>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
+          <Typography variant="h5">{user && user.name}</Typography>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === "rtl" ? (
+              <ChevronRightIcon />
+            ) : (
+              <ChevronLeftIcon />
+            )}
           </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
-          {['Dashboard','Schedules', 'Calendar'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton onClick={() => setMenuItem(text)}
-                sx={[
-                  {
-                    minHeight: 48,
-                    px: 2.5,
-                  },
-                  open
-                    ? {
-                        justifyContent: 'initial',
-                      }
-                    : {
-                        justifyContent: 'center',
-                      },
-                ]}
-              >
-                <ListItemIcon
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <NavLink to="/dashboard" style={{ textDecoration: "none", color: "inherit" }} onClick={() => setMenuItem("Dashboard")}>
+            <ListItemButton
                   sx={[
                     {
-                      minWidth: 0,
-                      justifyContent: 'center',
+                      minHeight: 48,
+                      px: 2.5,
                     },
                     open
                       ? {
-                          mr: 3,
+                          justifyContent: "initial",
                         }
                       : {
-                          mr: 'auto',
+                          justifyContent: "center",
                         },
                   ]}
                 >
-                  {text === "Schedules" && <EventNoteIcon/>}
-                  {text === "Calendar" && <CalendarMonthIcon/>}
-                  {text === "Dashboard" && <DashboardIcon/>}
-                </ListItemIcon>
-                <ListItemText
-                  primary={text}
+                <ListItemIcon
+                    sx={[
+                      {
+                        minWidth: 0,
+                        justifyContent: "center",
+                      },
+                      open
+                        ? {
+                            mr: 3,
+                          }
+                        : {
+                            mr: "auto",
+                          },
+                    ]}
+                  >
+                   <DashboardIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Dashboard"
+                    sx={[
+                      open
+                        ? {
+                            opacity: 1,
+                          }
+                        : {
+                            opacity: 0,
+                          },
+                    ]}
+                  />
+            </ListItemButton>
+            </NavLink>
+          </ListItem>
+          {["Schedules", "Calendar"].map((text, index) => (
+            <ListItem key={text} disablePadding sx={{ display: "block" }}>
+              <NavLink
+                to={`/dashboard/${text.toLowerCase()}`} // Use dynamic path based on the text
+                style={{ textDecoration: "none", color: "inherit" }} // Keep the same text styling
+                onClick={() => setMenuItem(text)} // Handle menu item click
+              >
+                <ListItemButton
                   sx={[
+                    {
+                      minHeight: 48,
+                      px: 2.5,
+                    },
                     open
                       ? {
-                          opacity: 1,
+                          justifyContent: "initial",
                         }
                       : {
-                          opacity: 0,
+                          justifyContent: "center",
                         },
                   ]}
-                />
-              </ListItemButton>
+                >
+                  <ListItemIcon
+                    sx={[
+                      {
+                        minWidth: 0,
+                        justifyContent: "center",
+                      },
+                      open
+                        ? {
+                            mr: 3,
+                          }
+                        : {
+                            mr: "auto",
+                          },
+                    ]}
+                  >
+                    {text === "Schedules" && <EventNoteIcon />}
+                    {text === "Calendar" && <CalendarMonthIcon />}
+                    {text === "Dashboard" && <DashboardIcon />}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={text}
+                    sx={[
+                      open
+                        ? {
+                            opacity: 1,
+                          }
+                        : {
+                            opacity: 0,
+                          },
+                    ]}
+                  />
+                </ListItemButton>
+              </NavLink>
             </ListItem>
           ))}
         </List>
       </Drawer>
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-            <DrawerHeader />
-            {menuItem === 'Dashboard'? <>
-              <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={2}>
-        <Grid size={8}>
-          <Item>size=8</Item>
-        </Grid>
-        <Grid size={4}>
-          <Item>size=4</Item>
-        </Grid>
-        <Grid size={4}>
-          <Item>size=4</Item>
-        </Grid>
-        <Grid size={8}>
-          <Item>size=8</Item>
-        </Grid>
-      </Grid>
-    </Box>
-            </>:<></>}
-            {menuItem === 'Schedules' && <InboxComponent />}
-            {menuItem === 'Calendar' && 
-            <>
-            <div style={{display:'flex', justifyContent:'end', marginTop:'5px', marginBottom:'10px'}}>
-                <ButtonGroup variant="contained" aria-label="Basic button group">
-                    <Button variant={view==="month"?'contained':'outlined'} onClick={()=>setView("month")}>Month</Button>
-                    <Button variant={view==="week"?'contained':'outlined'} onClick={()=>setView("week")}>Week</Button>
-                    <Button variant={view==="day"?'contained':'outlined'} onClick={()=>setView("day")}>Day</Button>
-                </ButtonGroup>
-            </div>
-            <ScheduleCalendar view={view} />
-            </>}
-        </Box>
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <DrawerHeader />
+        <Outlet/>
+      </Box>
     </Box>
   );
 }
