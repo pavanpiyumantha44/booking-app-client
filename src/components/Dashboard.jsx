@@ -167,8 +167,8 @@ export default function Dashboard() {
           <Typography variant="h6" noWrap component="div">
             Booking App
           </Typography>
-          <Button onClick={handleLogout} variant="contained" color="error">Logout</Button>
         </Toolbar>
+          {/* <Button onClick={handleLogout} variant="contained" color="error" style={{width:'10%'}}>Logout</Button> */}
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
