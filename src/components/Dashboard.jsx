@@ -28,6 +28,8 @@ import Grid from "@mui/material/Grid2";
 import { useAuth } from "../context/authContext";
 import { Outlet, useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 
 const drawerWidth = 240;
 
@@ -139,11 +141,10 @@ export default function Dashboard() {
     setOpen(false);
   };
 
-
-  const { user,logout } = useAuth();
-  const handleLogout = ()=>{
+  const { user, logout } = useAuth();
+  const handleLogout = () => {
     logout();
-  }
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -167,12 +168,14 @@ export default function Dashboard() {
           <Typography variant="h6" noWrap component="div">
             Booking App
           </Typography>
+          <Box sx={{ flexGrow: 1 }} />
+          <Typography variant="h6" noWrap component="div">
+            Welcome {user && user.name}!
+          </Typography>
         </Toolbar>
-          {/* <Button onClick={handleLogout} variant="contained" color="error" style={{width:'10%'}}>Logout</Button> */}
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <Typography variant="h5">{user && user.name}</Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
@@ -184,55 +187,59 @@ export default function Dashboard() {
         <Divider />
         <List>
           <ListItem disablePadding sx={{ display: "block" }}>
-            <NavLink to="/dashboard" style={{ textDecoration: "none", color: "inherit" }} onClick={() => setMenuItem("Dashboard")}>
-            <ListItemButton
+            <NavLink
+              to="/dashboard"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={() => setMenuItem("Dashboard")}
+            >
+              <ListItemButton
+                sx={[
+                  {
+                    minHeight: 48,
+                    px: 2.5,
+                  },
+                  open
+                    ? {
+                        justifyContent: "initial",
+                      }
+                    : {
+                        justifyContent: "center",
+                      },
+                ]}
+              >
+                <ListItemIcon
                   sx={[
                     {
-                      minHeight: 48,
-                      px: 2.5,
+                      minWidth: 0,
+                      justifyContent: "center",
                     },
                     open
                       ? {
-                          justifyContent: "initial",
+                          mr: 3,
                         }
                       : {
-                          justifyContent: "center",
+                          mr: "auto",
                         },
                   ]}
                 >
-                <ListItemIcon
-                    sx={[
-                      {
-                        minWidth: 0,
-                        justifyContent: "center",
-                      },
-                      open
-                        ? {
-                            mr: 3,
-                          }
-                        : {
-                            mr: "auto",
-                          },
-                    ]}
-                  >
-                   <DashboardIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Dashboard"
-                    sx={[
-                      open
-                        ? {
-                            opacity: 1,
-                          }
-                        : {
-                            opacity: 0,
-                          },
-                    ]}
-                  />
-            </ListItemButton>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Dashboard"
+                  sx={[
+                    open
+                      ? {
+                          opacity: 1,
+                        }
+                      : {
+                          opacity: 0,
+                        },
+                  ]}
+                />
+              </ListItemButton>
             </NavLink>
           </ListItem>
-          {["Schedules", "Calendar"].map((text, index) => (
+          {[,"Organization","Schedules", "Calendar"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <NavLink
                 to={`/dashboard/${text.toLowerCase()}`} // Use dynamic path based on the text
@@ -272,6 +279,7 @@ export default function Dashboard() {
                     {text === "Schedules" && <EventNoteIcon />}
                     {text === "Calendar" && <CalendarMonthIcon />}
                     {text === "Dashboard" && <DashboardIcon />}
+                    {text === "Organization" && <CorporateFareIcon />}
                   </ListItemIcon>
                   <ListItemText
                     primary={text}
@@ -289,11 +297,63 @@ export default function Dashboard() {
               </NavLink>
             </ListItem>
           ))}
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <NavLink
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={handleLogout}
+            >
+              <ListItemButton
+                sx={[
+                  {
+                    minHeight: 48,
+                    px: 2.5,
+                  },
+                  open
+                    ? {
+                        justifyContent: "initial",
+                      }
+                    : {
+                        justifyContent: "center",
+                      },
+                ]}
+              >
+                <ListItemIcon
+                  sx={[
+                    {
+                      minWidth: 0,
+                      justifyContent: "center",
+                    },
+                    open
+                      ? {
+                          mr: 3,
+                        }
+                      : {
+                          mr: "auto",
+                        },
+                  ]}
+                >
+                  <LogoutIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Logout"
+                  sx={[
+                    open
+                      ? {
+                          opacity: 1,
+                        }
+                      : {
+                          opacity: 0,
+                        },
+                  ]}
+                />
+              </ListItemButton>
+            </NavLink>
+          </ListItem>
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <Outlet/>
+        <Outlet />
       </Box>
     </Box>
   );

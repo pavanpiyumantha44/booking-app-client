@@ -7,6 +7,7 @@ import PrivateRoutes from './utils/PrivateRoutes'
 import ScheduleCalendar from './components/ScheduleCalendar'
 import Summary from './components/Summary'
 import Schedules from './components/Schedules'
+import Organizations from './components/Organizations'
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path='/login' element={<Login/>}/>
         <Route path='/dashboard' element={<PrivateRoutes><Dashboard/></PrivateRoutes>}>
           <Route index element={<Summary/>}></Route>
+          <Route path='/dashboard/organization' element={<Organizations/>}></Route>
           <Route path='/dashboard/schedules' element={<Schedules/>}></Route>
           <Route path='/dashboard/calendar' element={<ScheduleCalendar/>}></Route>
         </Route>

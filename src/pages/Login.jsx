@@ -20,7 +20,7 @@ function Login() {
       const response = await axios.post('http://localhost:5000/api/auth/login',{email,password});
       if(response.data.success){
         login(response.data.user)
-        localStorage.setItem("toekn",response.data.token);
+        localStorage.setItem("token",response.data.token);
         if(response.data.user){
             navigate('/dashboard');
         }
