@@ -9,13 +9,14 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import FormDialog from './FormDialog';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Fade from '@mui/material/Fade';
 import axios from 'axios';
-
+import Progress from '../../utils/Progress';
+import DeleteDialog from './DeleteDialog';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -27,56 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#1A2027",
   }),
 }));
-const columns = [
-    {
-      field: "name",
-      headerName: "Name",
-      flex:1,
-      editable: true,
-    },
-    {
-      field: "address",
-      headerName: "Address",
-      flex:1,
-      editable: true,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex:1,
-      editable: true,
-    },
-    {
-      field: "phone",
-      headerName: "Phone",
-      flex:1,
-      editable: true,
-    },
-    {
-        field: "action",
-        headerName: "Action",
-        flex:1,
-        editable: false,
-        renderCell: (params) => {
-          return (
-            <>
-              <GridActionsCellItem
-                icon={<EditIcon />}
-                label="Edit"
-                //onClick={() => handleEditClick(params.id)}
-                color="inherit"
-              />
-              <GridActionsCellItem
-                icon={<DeleteIcon />}
-                label="Delete"
-                //onClick={() => handleDeleteClick(params.id)}
-                color="inherit"
-              />
-            </>
-          );
-        }
-      },
-  ];
+
   
   const rows = [
     {
@@ -197,10 +149,75 @@ const columns = [
     </Typography>,
   ];
 const Organizations = () => {
+  const columns = [
+    {
+      field: "name",
+      headerName: "Name",
+      flex:1,
+      editable: true,
+      renderCell: (params) => (
+        <span
+          style={{ cursor: 'pointer'}}
+          onClick={() => handleEditClick(params.id)}
+        >
+          {params.value}
+        </span>
+      ),
+    },
+    {
+      field: "address",
+      headerName: "Address",
+      flex:1,
+      editable: true,
+    },
+    {
+      field: "email",
+      headerName: "Email",
+      flex:1,
+      editable: true,
+    },
+    {
+      field: "phone",
+      headerName: "Phone",
+      flex:1,
+      editable: true,
+    },
+    {
+        field: "action",
+        headerName: "Action",
+        flex:1,
+        editable: false,
+        renderCell: (params) => {
+          return (
+            <>
+              <GridActionsCellItem
+                icon={<EditIcon />}
+                label="Edit"
+                onClick={() => handleEditClick(params.id)}
+                color="inherit"
+              />
+              <GridActionsCellItem
+                icon={<DeleteIcon />}
+                label="Delete"
+                onClick={() => handleDeleteClick(params.id)}
+                color="inherit"
+              />
+            </>
+          );
+        }
+      },
+  ];
   const [organizations,setOrganizations] = useState(null);
+  const [reload,setReload] = useState(false);
+  const [loading,setLoading] =useState(false);
+  const [openDeleteDialog,setOpenDeleteDialog] = useState(false);
+  const navigate = useNavigate();
+  
+  
   useEffect(()=>{
     const fetchOrganizations = async()=>{
       try {
+        setLoading(true);
         const response = await axios.get('http://localhost:5000/api/organization',{
           headers:{
             "Authorization": `Bearer ${localStorage.getItem('token')}`
@@ -216,12 +233,15 @@ const Organizations = () => {
               address: org.address
             }
           ));
+          setOrganizations(data);
+          setLoading(false);
         }
       } catch (error) {
-        
+        console.log(error.response.error);
       }
     }
-  },[])
+    fetchOrganizations();
+  },[reload])
 
     const [state, setState] = React.useState({
         open: false,
@@ -237,6 +257,26 @@ const Organizations = () => {
         setState({ ...state, open: false });
       };
     
+    const handleEditClick = (id)=>{
+      navigate(`/dashboard/organizations/${id}`);
+    }
+    const handleDeleteClick = async(id)=>{
+      try {
+        setLoading(true);
+        const response = await axios.delete(`http://localhost:5000/api/organization/${id}`,{
+          headers:{
+            "Authorization": `Bearer ${localStorage.getItem('token')}`
+          }
+        })
+        if(response.data.success){
+          setReload(!reload);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error.response.error);
+      }
+    }
+
   return (
     <>
     <Box sx={{ flexGrow: 1 }}>
@@ -250,7 +290,7 @@ const Organizations = () => {
                 </Breadcrumbs>
               </Grid>
               <Grid size={{ xs: 4, md: 2, lg: 2 }} sx={{display:'flex', justifyContent:'flex-end'}}>
-              <FormDialog handleClick={handleClick}/>
+              <FormDialog handleClick={handleClick} reload={reload} setReload={setReload}/>
               </Grid>
             </Grid>
           </Stack>
@@ -258,8 +298,11 @@ const Organizations = () => {
       </Grid>
       <Grid size={{ xs: 12, md: 12, lg: 12 }} sx={{ marginTop: "2%" }}>
         <Box sx={{ height: '60vh', width: "100%" }}>
+          {
+            loading ? <Progress/> :
+          
           <DataGrid
-            rows={rows}
+            rows={organizations}
             columns={columns}
             initialState={{
               pagination: {
@@ -272,6 +315,7 @@ const Organizations = () => {
             checkboxSelection
             disableRowSelectionOnClick
           />
+        }
         </Box>
       </Grid>
     </Box>

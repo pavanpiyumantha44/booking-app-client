@@ -25,7 +25,7 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid2";
-import { useAuth } from "../context/authContext";
+import { useAuth } from "../../context/authContext";
 import { Outlet, useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -239,7 +239,7 @@ export default function Dashboard() {
               </ListItemButton>
             </NavLink>
           </ListItem>
-          {[,"Organization","Schedules", "Calendar"].map((text, index) => (
+          {[,"Organizations","Schedules", "Calendar"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <NavLink
                 to={`/dashboard/${text.toLowerCase()}`} // Use dynamic path based on the text
@@ -279,7 +279,7 @@ export default function Dashboard() {
                     {text === "Schedules" && <EventNoteIcon />}
                     {text === "Calendar" && <CalendarMonthIcon />}
                     {text === "Dashboard" && <DashboardIcon />}
-                    {text === "Organization" && <CorporateFareIcon />}
+                    {text === "Organizations" && <CorporateFareIcon />}
                   </ListItemIcon>
                   <ListItemText
                     primary={text}

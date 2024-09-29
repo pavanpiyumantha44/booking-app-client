@@ -116,7 +116,7 @@ function Login() {
         }}
       >
         <Typography variant="body2" sx={{marginTop:'50px'}}>
-          © 2024 Your Company Name. All rights reserved.
+          © 2024 Company Name. All rights reserved.
         </Typography>
       </Box>
       </>

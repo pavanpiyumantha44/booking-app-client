@@ -11,7 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export default function FormDialog() {
+export default function FormDialog({reload,setReload}) {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const [organization, setOrganization] = useState({
@@ -33,6 +33,7 @@ export default function FormDialog() {
         }
        })
        if(response.data.success){
+          setReload(!reload);
           handleClose();
           navigate('/dashboard/organization');
        }
