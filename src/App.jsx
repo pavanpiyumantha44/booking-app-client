@@ -9,6 +9,7 @@ import Summary from './components/Dashboard/Summary'
 import Schedules from './components/Dashboard/Schedules'
 import Organizations from './components/Dashboard/Organizations'
 import EditOrganization from './components/Dashboard/EditOrganization'
+import Booking from './pages/Booking'
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/login' element={<Login/>}/>
+        <Route path='/booking' element={<Booking/>}/>
         <Route path='/dashboard' element={<PrivateRoutes><Dashboard/></PrivateRoutes>}>
           <Route index element={<Summary/>}></Route>
           <Route path='/dashboard/organizations' element={<Organizations/>}></Route>

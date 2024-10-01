@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -41,10 +41,31 @@ const breadcrumbs = [
 const EditOrganization = () => {
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
+  const [organization,setOrganization] = useState({});
+
+  useEffect(()=>{
+    const fetchOrganization = async()=>{
+    try {
+      const response = await axios.get(`http://localhost:5000/api/organization/${id}`,{
+        headers:{
+          "Authorization": `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      if(response.data.success){
+        setOrganization(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  fetchOrganization();
+  console.log(organization)
+  },[id])
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -77,50 +98,45 @@ const EditOrganization = () => {
             <Progress />
           ) : (
             <>
-              <Box sx={{ height: "30vh", width: "100%" }}>
-                <Grid size={12} sx={{ padding: "20px" }}>
-                  <Grid item xs={12} md={4}>
-                    <Grid container spacing={2} sx={{display:'flex', justifyContent:'space-between'}}>
-                      <Grid item xs={12} md={4}>
-                        <TextField
-                          autoFocus
-                          required
-                          margin="dense"
-                          name="name"
-                          label="Name"
-                          type="text"
-                          fullWidth
-                          variant="outlined"
-                          onChange={handleChange}
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={4}>
-                        <TextField
-                          required
-                          margin="dense"
-                          name="email"
-                          label="Email Address"
-                          type="email"
-                          fullWidth
-                          variant="outlined"
-                          onChange={handleChange}
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={4}>
-                        <TextField
-                          required
-                          margin="dense"
-                          name="phone"
-                          label="Contact Number"
-                          type="text"
-                          fullWidth
-                          variant="outlined"
-                          onChange={handleChange}
-                        />
-                      </Grid>
-                    </Grid>
+              <Box sx={{ height: "30vh", width: "100%", marginBottom: "8%" }}>
+                <Grid size={12} sx={{ padding: "10px" }}>
+                  <Grid item size={12}>
+                    <TextField
+                      required
+                      margin="dense"
+                      name="name"
+                      label="Name"
+                      type="text"
+                      fullWidth
+                      variant="outlined"
+                      onChange={handleChange}
+                    />
                   </Grid>
-                  <Grid size={12}>
+                  <Grid item size={12}>
+                    <TextField
+                      required
+                      margin="dense"
+                      name="email"
+                      label="Email Address"
+                      type="email"
+                      fullWidth
+                      variant="outlined"
+                      onChange={handleChange}
+                    />
+                  </Grid>
+                  <Grid item size={12}>
+                    <TextField
+                      required
+                      margin="dense"
+                      name="phone"
+                      label="Contact Number"
+                      type="text"
+                      fullWidth
+                      variant="outlined"
+                      onChange={handleChange}
+                    />
+                  </Grid>
+                  <Grid item size={12}>
                     <TextField
                       label="Address"
                       name="address"
@@ -136,19 +152,15 @@ const EditOrganization = () => {
                   </Grid>
                 </Grid>
               </Box>
-              <Box sx={{ width: "100%"}}>
+              <Box sx={{ width: "100%", marginTop: "100px" }}>
                 <Tabs
                   onChange={handleChange}
                   value={value}
                   aria-label="Tabs where selection follows focus"
                   selectionFollowsFocus
                 >
-                  <Tab label="Services">
-                   
-                  </Tab>
-                  <Tab label="Service Details">
-                    Service Details
-                  </Tab>
+                  <Tab label="Services"></Tab>
+                  <Tab label="Service Details">Service Details</Tab>
                 </Tabs>
               </Box>
             </>

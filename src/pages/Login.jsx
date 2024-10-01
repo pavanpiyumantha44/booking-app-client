@@ -6,6 +6,7 @@ import {useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
+import Footer from '../components/Footer';
 
 function Login() {
   const [email,setEmail] = useState('')
@@ -105,20 +106,7 @@ function Login() {
       </Grid>
     
     </Grid>
-      <Box 
-        component="footer" 
-        sx={{ 
-          backgroundColor: 'black', 
-          color: 'white',
-          height:'100px', 
-          textAlign: 'center', 
-          padding: '10px' 
-        }}
-      >
-        <Typography variant="body2" sx={{marginTop:'50px'}}>
-          © 2024 Company Name. All rights reserved.
-        </Typography>
-      </Box>
+      <Footer/>
       </>
   );
 }

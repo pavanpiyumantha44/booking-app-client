@@ -1,5 +1,6 @@
 import React from "react";
 import NavBar from "../components/NavBar";
+import Footer from '../components/Footer';
 import {
   Box,
   Button,
@@ -11,9 +12,15 @@ import {
 import Grid from "@mui/material/Grid2";
 import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import HeroImg from '../assets/hm.jpeg'
+import { useNavigate } from "react-router-dom";
 
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  const handleNavigate = ()=>{
+    navigate('/booking');
+  }
   return (
     <>
     <NavBar/>
@@ -42,6 +49,7 @@ const Home = () => {
               variant="contained"  
               color="info"
               sx={{ mt: 2, width:'50%' }}
+              onClick={handleNavigate}
             >
               Book <ScheduleSendIcon fontSize="small" sx={{marginLeft:'5px'}}/>
             </Button>
@@ -113,20 +121,7 @@ const Home = () => {
       </Box> */}
 
       {/* Footer Section */}
-      <Box 
-        component="footer" 
-        sx={{ 
-          backgroundColor: 'black', 
-          color: 'white', 
-          textAlign: 'center',
-          height:'100px',  
-          padding: '10px' 
-        }}
-      >
-        <Typography variant="body2" sx={{marginTop:'10px'}}>
-          © 2024 Company Name. All rights reserved.
-        </Typography>
-      </Box>
+      <Footer/>
     </Box>
     </>
   );
