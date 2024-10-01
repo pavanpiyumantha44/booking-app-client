@@ -281,7 +281,7 @@ const Organizations = () => {
     <>
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 12, lg: 12 }} sx={{ padding: "20px" }}>
+        <Grid size={12} sx={{ padding: "20px" }}>
           <Stack spacing={2}>
             <Grid container spacing={2}>
               <Grid size={{ xs: 8, md: 10, lg: 10 }}>
