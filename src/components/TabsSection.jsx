@@ -3,11 +3,12 @@ import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import Grid from "@mui/material/Grid2";
 import { Stack } from "@mui/material";
-import AddServiceDialog from "../components/Dashboard/AddServiceDialog";
-import AddServiceDetailsDialog from "../components/Dashboard/AddServiceDetailsDialog";
+import AddServiceDialog from "../pages/Dashboard/Dialogs/AddServiceDialog";
+import AddServiceDetailsDialog from "../pages/Dashboard/Dialogs/AddServiceDetailsDialog";
+import Chip from '@mui/material/Chip';
+import DataTable from "./DataTable";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -38,8 +39,8 @@ function a11yProps(index) {
   };
 }
 
-export default function TabsSection({ id, services, reload, setReload }) {
-  const columns = [
+export default function TabsSection({ id, services,serviceDetails, reload, setReload }) {
+  const columns1 = [
     {
       field: "name",
       headerName: "Name",
@@ -67,6 +68,47 @@ export default function TabsSection({ id, services, reload, setReload }) {
       editable: true,
     },
   ];
+
+
+  const columns2 = [
+    {
+      field: "service",
+      headerName: "Service",
+      flex: 1,
+      editable: true,
+    },
+    {
+      field: "providedService",
+      headerName: "Provided Service",
+      flex: 1,
+      editable: true,
+      renderCell: (params) => (
+        <span style={{ cursor: "pointer" }}>
+          {params.value}
+        </span>
+      ),
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      flex: 1,
+      editable: true,
+    },
+    {
+      field: "isAvailable",
+      headerName: "Availability",
+      flex: 1,
+      editable: true,
+      renderCell: (params) => (
+        params.value ? (
+          <Chip label="Available" color="success" />
+        ) : (
+          <Chip label="Unavailable" color="error" />
+        )
+      ),
+    },
+  ];
+  
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -107,20 +149,7 @@ export default function TabsSection({ id, services, reload, setReload }) {
         {/* Body Section */}
         <Grid size={{ xs: 12, md: 12, lg: 12 }} sx={{ marginTop: "1%" }}>
           <Box sx={{ width: "100%" }}>
-            <DataGrid
-              rows={services}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 5,
-                  },
-                },
-              }}
-              pageSizeOptions={[5]}
-              checkboxSelection
-              disableRowSelectionOnClick
-            />
+          <DataTable rows={services} cols={columns1}/>
           </Box>
         </Grid>
       </CustomTabPanel>
@@ -149,20 +178,7 @@ export default function TabsSection({ id, services, reload, setReload }) {
         {/* Body Section */}
         <Grid size={{ xs: 12, md: 12, lg: 12 }} sx={{ marginTop: "1%" }}>
           <Box sx={{ width: "100%" }}>
-            <DataGrid
-              rows={services}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 5,
-                  },
-                },
-              }}
-              pageSizeOptions={[5]}
-              checkboxSelection
-              disableRowSelectionOnClick
-            />
+            <DataTable rows={serviceDetails} cols={columns2}/>
           </Box>
         </Grid>
       </CustomTabPanel>

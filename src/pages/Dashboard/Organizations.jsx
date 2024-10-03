@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Box from "@mui/material/Box";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import {GridActionsCellItem } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid2";
@@ -10,13 +10,10 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import { NavLink, useNavigate } from "react-router-dom";
-import FormDialog from './FormDialog';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import Fade from '@mui/material/Fade';
 import axios from 'axios';
-import Progress from '../../utils/Progress';
-import DeleteDialog from './DeleteDialog';
+import Progress from '../../components/Progress';
+import DataTable from '../../components/DataTable';
+import FormDialog from './Dialogs/FormDialog';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -242,20 +239,6 @@ const Organizations = () => {
     }
     fetchOrganizations();
   },[reload])
-
-    const [state, setState] = React.useState({
-        open: false,
-        vertical: 'top',
-        horizontal: 'center',
-        Transition: Fade,
-      });
-      const { vertical, horizontal, open } = state;
-      const handleClick = (newState) => () => {
-        setState({ ...newState, open: true });
-      };
-      const handleClose = () => {
-        setState({ ...state, open: false });
-      };
     
     const handleEditClick = (id)=>{
       navigate(`/dashboard/organizations/${id}`);
@@ -290,7 +273,7 @@ const Organizations = () => {
                 </Breadcrumbs>
               </Grid>
               <Grid size={{ xs: 4, md: 2, lg: 2 }} sx={{display:'flex', justifyContent:'flex-end'}}>
-              <FormDialog handleClick={handleClick} reload={reload} setReload={setReload}/>
+              <FormDialog reload={reload} setReload={setReload}/>
               </Grid>
             </Grid>
           </Stack>
@@ -300,41 +283,11 @@ const Organizations = () => {
         <Box sx={{ height: '60vh', width: "100%" }}>
           {
             loading ? <Progress/> :
-          
-          <DataGrid
-            rows={organizations}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 7,
-                },
-              },
-            }}
-            pageSizeOptions={[5]}
-            checkboxSelection
-            disableRowSelectionOnClick
-          />
+          <DataTable rows={organizations} cols={columns}/>
         }
         </Box>
       </Grid>
     </Box>
-    <Snackbar
-        anchorOrigin={{ vertical, horizontal }}
-        open={open}
-        TransitionComponent={state.Transition}
-        message="I love snacks"
-        key={vertical + horizontal}
-    >
-         <Alert
-    onClose={handleClose}
-    severity="success"
-    variant="filled"
-    sx={{ width: '100%',color:'white' }}
-  >
-    This is a success Alert inside a Snackbar!
-  </Alert>
-    </Snackbar>
   </>
   )
 }

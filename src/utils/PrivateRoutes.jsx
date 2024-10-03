@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
-import Progress from "./Progress";
+import Progress from "../components/Progress";
 
 
 

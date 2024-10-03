@@ -5,14 +5,15 @@ import Grid from "@mui/material/Grid2";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import Progress from "../../utils/Progress";
+import Progress from "../../components/Progress";
 import { NavLink, useParams } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import TextField from "@mui/material/TextField";
-import DeleteDialog from "./DeleteDialog";
-import TabsSection from "../../utils/TabsSection";
+import DeleteDialog from "./Dialogs/DeleteDialog";
+import TabsSection from "../../components/TabsSection";
 import RefreshIcon from '@mui/icons-material/Refresh';
+import SnackBar from "../../components/SnackBar";
 
 const breadcrumbs = [
   <NavLink
@@ -40,9 +41,12 @@ const breadcrumbs = [
 const EditOrganization = () => {
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(false);
+  const [alertOn,setAlertOn] = useState(false);
+  const [snackBarMessage,setSnackBarMessage] = useState('');
   const { id } = useParams();
   const [organization, setOrganization] = useState([]);
   const [services, setServices] = useState(null);
+  const [serviceDetails, setServiceDetails] = useState(null);
 
   useEffect(() => {
     const fetchOrganization = async () => {
@@ -78,13 +82,34 @@ const EditOrganization = () => {
             cost: service.cost,
             description: service.description,
           }));
-          console.log(servicesResponse.data.services);
           setServices(data);
         }
       } catch (error) {
         console.log(error);
       }
     };
+    const fetchServiceDetails = async () => {
+      try {
+        const serviceDetailResponse = await axios.get(`http://localhost:5000/api/serviceDetail/services/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (serviceDetailResponse.data.success) {
+          const data = await serviceDetailResponse.data.serviceDetails.map((detail) => ({
+            id: detail._id,
+            service:detail.serviceId.name,
+            providedService: detail.providedService,
+            description: detail.description,
+            isAvailable:detail.isAvailable,
+          }));
+          setServiceDetails(data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchServiceDetails();
     fetchServices();
     fetchOrganization();
   }, [reload]);
@@ -109,6 +134,8 @@ const EditOrganization = () => {
       );
       if (response.data.success) {
         setReload(!reload);
+        setAlertOn(true);
+        setSnackBarMessage("Updated Sucessfully!!");
       }
     } catch (error) {
       if (error.response && !error.response.data.success) {
@@ -119,10 +146,14 @@ const EditOrganization = () => {
   const refresh = ()=>{
     setReload(!reload);
   }
+  const handleClose = () => {
+    setAlertOn(false); // Close the Snackbar
+  };
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
+          <SnackBar open={alertOn} message={snackBarMessage} onClose={handleClose}/>
           {/* Header Tools */}
           <Grid size={{ xs: 12, md: 12, lg: 12 }} sx={{ padding: "20px" }}>
             <Stack spacing={2}>
@@ -217,7 +248,7 @@ const EditOrganization = () => {
                   </Grid>
                 </form>
               </Box>
-              <TabsSection id={id} services={services} reload={reload} setReload={setReload}/>
+              <TabsSection id={id} services={services} serviceDetails={serviceDetails} reload={reload} setReload={setReload}/>
             </>
           )}
         </Grid>

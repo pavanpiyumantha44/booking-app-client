@@ -1,6 +1,6 @@
 import { Box, Breadcrumbs, Stack, Typography } from "@mui/material";
 import React from "react";
-import BasicCard from "../../utils/Card";
+import BasicCard from "../../components/Card";
 import Grid from "@mui/material/Grid2";
 import { NavLink } from "react-router-dom";
 
