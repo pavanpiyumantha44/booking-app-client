@@ -10,35 +10,44 @@ import { Box, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
-export default function AddServiceDialog({id,reload,setReload}) {
-  const [open, setOpen] = React.useState(false);
+export default function AddServiceDetailsDialog({ id, reload, setReload, services }) {
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [service, setService] = useState({
+  const [age,setAage] = useState();
+  const [serviceDetails, setServiceDetails] = useState({
     name: "",
     description: "",
     cost: "",
-    orgId:id
+    orgId: id,
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setService({ ...service, [name]: value });
+    setServiceDetails({ ...serviceDetails, [name]: value });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-       const response = await axios.post('http://localhost:5000/api/service/add',service,{
-        headers:{
-          "Authorization":`Bearer ${localStorage.getItem('token')}`
+      const response = await axios.post(
+        "http://localhost:5000/api/service/add",
+        serviceDetails,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-       })
-       if(response.data.success){
-          setReload(!reload);
-          handleClose();
-          navigate(`/dashboard/organizations/${id}`);
-       }
+      );
+      if (response.data.success) {
+        setReload(!reload);
+        handleClose();
+
+      }
     } catch (error) {
-      if(error.response && !error.response.data.success){
+      if (error.response && !error.response.data.success) {
         console.log(error.response);
       }
     }
@@ -60,17 +69,21 @@ export default function AddServiceDialog({id,reload,setReload}) {
         <DialogTitle>New Service Provider</DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit}>
-            <TextField
-              autoFocus
-              required
-              margin="dense"
-              name="name"
-              label="Name"
-              type="text"
-              fullWidth
-              variant="outlined"
-              onChange={handleChange}
-            />
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Service</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={age}
+                onChange={handleChange}
+              >
+                {
+                    services.map((key,value)=>(
+                        <MenuItem value={10} key={key}>{value.name}</MenuItem>
+                    ))
+                }
+              </Select>
+            </FormControl>
             <TextField
               required
               margin="dense"
