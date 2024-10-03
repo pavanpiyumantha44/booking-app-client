@@ -11,23 +11,23 @@ import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export default function FormDialog({reload,setReload}) {
+export default function AddServiceDialog({id,reload,setReload}) {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
-  const [organization, setOrganization] = useState({
+  const [service, setService] = useState({
     name: "",
-    email: "",
-    phone: "",
-    address: "",
+    description: "",
+    cost: "",
+    orgId:id
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setOrganization({ ...organization, [name]: value });
+    setService({ ...service, [name]: value });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-       const response = await axios.post('http://localhost:5000/api/organization/add',organization,{
+       const response = await axios.post('http://localhost:5000/api/service/add',service,{
         headers:{
           "Authorization":`Bearer ${localStorage.getItem('token')}`
         }
@@ -35,7 +35,7 @@ export default function FormDialog({reload,setReload}) {
        if(response.data.success){
           setReload(!reload);
           handleClose();
-          navigate('/dashboard/organizations');
+          navigate(`/dashboard/organizations/${id}`);
        }
     } catch (error) {
       if(error.response && !error.response.data.success){
@@ -74,30 +74,20 @@ export default function FormDialog({reload,setReload}) {
             <TextField
               required
               margin="dense"
-              name="email"
-              label="Email Address"
-              type="email"
+              name="cost"
+              label="Cost for (1H)"
+              type="number"
               fullWidth
               variant="outlined"
               onChange={handleChange}
             />
             <TextField
-              required
-              margin="dense"
-              name="phone"
-              label="Contact Number"
-              type="text"
-              fullWidth
-              variant="outlined"
-              onChange={handleChange}
-            />
-            <TextField
-              label="Address"
-              name="address"
+              label="description"
+              name="description"
               margin="dense"
               fullWidth
               multiline
-              rows={4}
+              rows={3}
               required
               type="text"
               variant="outlined"
