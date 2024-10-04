@@ -19,9 +19,6 @@ import ListItemText from "@mui/material/ListItemText";
 import { useState } from "react";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import ScheduleCalendar from "./ScheduleCalendar";
-import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid2";
@@ -131,7 +128,8 @@ const InboxComponent = () => (
 export default function Dashboard() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [menuItem, setMenuItem] = useState("Schedules");
+  const [menuItem, setMenuItem] = useState("Dashboard");
+  const [selected,setSelected] = useState("Summary");
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -186,13 +184,13 @@ export default function Dashboard() {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItem disablePadding sx={{ display: "block" }}>
+          <ListItem disablePadding sx={{ display: "block"}}>
             <NavLink
               to="/dashboard"
-              style={{ textDecoration: "none", color: "inherit" }}
+              style={{ textDecoration: "none", color: "inherit"}}
               onClick={() => setMenuItem("Dashboard")}
             >
-              <ListItemButton
+              <ListItemButton style={{borderLeft: menuItem === "Dashboard" ? '5px solid #185EA5' : 'none',}}
                 sx={[
                   {
                     minHeight: 48,
@@ -222,7 +220,7 @@ export default function Dashboard() {
                         },
                   ]}
                 >
-                  <DashboardIcon />
+                  <DashboardIcon color={menuItem==="Dashboard"?"primary":""}/>
                 </ListItemIcon>
                 <ListItemText
                   primary="Dashboard"
@@ -246,7 +244,7 @@ export default function Dashboard() {
                 style={{ textDecoration: "none", color: "inherit" }} // Keep the same text styling
                 onClick={() => setMenuItem(text)} // Handle menu item click
               >
-                <ListItemButton
+                <ListItemButton style={{borderLeft: menuItem === text ? '5px solid #185EA5' : 'none'}}
                   sx={[
                     {
                       minHeight: 48,
@@ -276,10 +274,10 @@ export default function Dashboard() {
                           },
                     ]}
                   >
-                    {text === "Schedules" && <EventNoteIcon />}
-                    {text === "Calendar" && <CalendarMonthIcon />}
-                    {text === "Dashboard" && <DashboardIcon />}
-                    {text === "Organizations" && <CorporateFareIcon />}
+                    {text === "Schedules" && <EventNoteIcon color={menuItem==="Schedules"?"primary":""}/>}
+                    {text === "Calendar" && <CalendarMonthIcon color={menuItem==="Calendar"?"primary":""}/>}
+                    {text === "Dashboard" && <DashboardIcon color={menuItem==="Dashboard"?"primary":""}/>}
+                    {text === "Organizations" && <CorporateFareIcon color={menuItem==="Organizations"?"primary":""}/>}
                   </ListItemIcon>
                   <ListItemText
                     primary={text}
@@ -332,7 +330,7 @@ export default function Dashboard() {
                         },
                   ]}
                 >
-                  <LogoutIcon />
+                  <LogoutIcon/>
                 </ListItemIcon>
                 <ListItemText
                   primary="Logout"

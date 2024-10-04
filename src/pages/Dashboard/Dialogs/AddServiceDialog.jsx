@@ -4,12 +4,10 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Box, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { addService } from "../../../services/provideService";
 
 export default function AddServiceDialog({id,reload,setReload}) {
   const [open, setOpen] = React.useState(false);
@@ -26,17 +24,13 @@ export default function AddServiceDialog({id,reload,setReload}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-       const response = await axios.post('http://localhost:5000/api/service/add',service,{
-        headers:{
-          "Authorization":`Bearer ${localStorage.getItem('token')}`
-        }
-       })
-       if(response.data.success){
+       const response = await addService(service);
+       if(response.success){
           setReload(!reload);
           handleClose();
        }
     } catch (error) {
-      if(error.response && !error.response.data.success){
+      if(error.response && !error.response.success){
         console.log(error.response);
       }
     }

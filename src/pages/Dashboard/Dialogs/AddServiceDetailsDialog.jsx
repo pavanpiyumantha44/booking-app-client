@@ -4,16 +4,14 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { addServiceDetails } from "../../../services/serviceDetailsService";
 
 export default function AddServiceDetailsDialog({ id, reload, setReload, services }) {
   const [open, setOpen] = useState(false);
@@ -27,22 +25,13 @@ export default function AddServiceDetailsDialog({ id, reload, setReload, service
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/serviceDetail/add",
-        {providedService,description,isAvailable,orgId,serviceId},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (response.data.success) {
+      const response = await addServiceDetails({providedService,description,isAvailable,orgId,serviceId});
+      if (response.success) {
         setReload(!reload);
         handleClose();
-
       }
     } catch (error) {
-      if (error.response && !error.response.data.success) {
+      if (error.response && !error.response.success) {
         console.log(error.response);
       }
     }

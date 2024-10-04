@@ -1,12 +1,12 @@
 import {Grid,TextField, Button, Typography, Box } from '@mui/material';
-//import Grid from '@mui/material/Grid2';
 import loginImage from '../assets/hero_bg.jpg'
 import NavBar from '../components/NavBar';
 import {useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import Footer from '../components/Footer';
+import loginService from '../services/loginService';
+
 
 function Login() {
   const [email,setEmail] = useState('')
@@ -18,18 +18,18 @@ function Login() {
   const handleSubmit = async(e)=>{
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login',{email,password});
-      if(response.data.success){
-        login(response.data.user)
-        localStorage.setItem("token",response.data.token);
-        if(response.data.user){
+      const response = await loginService({email,password});
+      if(response.success){
+        login(response.user)
+        localStorage.setItem("token",response.token);
+        if(response.user){
             navigate('/dashboard');
         }
       }
     } catch (error) {
-      console.log(error.response.data.error);
-      if(error.response && !error.response.data.success){
-        setError(error.response.data.error);
+      console.log(error.response.error);
+      if(error.response && !error.response.success){
+        setError(error.response.error);
       }
       else{
         setError("Server Error");
@@ -43,7 +43,7 @@ function Login() {
       
       <Grid
         item
-        xs={false} // Hidden on extra small screens (mobile)
+        xs={12} // Hidden on extra small screens (mobile)
         sm={6}    // Shown on small screens and above
         sx={{
           backgroundImage: `url(${loginImage})`, // Replace with your image

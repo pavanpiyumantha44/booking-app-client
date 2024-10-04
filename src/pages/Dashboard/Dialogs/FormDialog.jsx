@@ -4,12 +4,11 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box, IconButton } from "@mui/material";
+import {IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { addOrganization } from "../../../services/organizationService";
 
 export default function FormDialog({reload,setReload}) {
   const [open, setOpen] = React.useState(false);
@@ -27,18 +26,14 @@ export default function FormDialog({reload,setReload}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-       const response = await axios.post('http://localhost:5000/api/organization/add',organization,{
-        headers:{
-          "Authorization":`Bearer ${localStorage.getItem('token')}`
-        }
-       })
-       if(response.data.success){
+       const response = await addOrganization(organization);
+       if(response.success){
           setReload(!reload);
           handleClose();
           navigate('/dashboard/organizations');
        }
     } catch (error) {
-      if(error.response && !error.response.data.success){
+      if(error.response && !error.response.success){
         console.log(error.response);
       }
     }

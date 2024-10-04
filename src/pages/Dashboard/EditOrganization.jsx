@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
@@ -14,6 +13,9 @@ import DeleteDialog from "./Dialogs/DeleteDialog";
 import TabsSection from "../../components/TabsSection";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SnackBar from "../../components/SnackBar";
+import { getOrganization, updateOrganization } from "../../services/organizationService";
+import { getServices } from "../../services/provideService";
+import { getServiceDetails } from "../../services/serviceDetailsService";
 
 const breadcrumbs = [
   <NavLink
@@ -38,6 +40,7 @@ const breadcrumbs = [
     Edit Service Provider
   </Typography>,
 ];
+
 const EditOrganization = () => {
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(false);
@@ -52,31 +55,21 @@ const EditOrganization = () => {
     const fetchOrganization = async () => {
       setLoading(true);
       try {
-        const orgResponse = await axios.get(
-          `http://localhost:5000/api/organization/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        if (orgResponse.data.success) {
-          setOrganization(orgResponse.data.organization);
+        const orgResponse = await getOrganization(id);
+        if (orgResponse.success) {
+          setOrganization(orgResponse.organization);
           setLoading(false);
         }
       } catch (error) {
         console.log(error);
       }
     };
+
     const fetchServices = async () => {
       try {
-        const servicesResponse = await axios.get(`http://localhost:5000/api/service/org/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        if (servicesResponse.data.success) {
-          const data = await servicesResponse.data.services.map((service) => ({
+        const servicesResponse = await getServices(id);
+        if (servicesResponse.success) {
+          const data = await servicesResponse.services.map((service) => ({
             id: service._id,
             name: service.name,
             cost: service.cost,
@@ -88,15 +81,12 @@ const EditOrganization = () => {
         console.log(error);
       }
     };
+    
     const fetchServiceDetails = async () => {
       try {
-        const serviceDetailResponse = await axios.get(`http://localhost:5000/api/serviceDetail/services/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        if (serviceDetailResponse.data.success) {
-          const data = await serviceDetailResponse.data.serviceDetails.map((detail) => ({
+        const serviceDetailResponse = await getServiceDetails(id);
+        if (serviceDetailResponse.success) {
+          const data = await serviceDetailResponse.serviceDetails.map((detail) => ({
             id: detail._id,
             service:detail.serviceId.name,
             providedService: detail.providedService,
@@ -123,22 +113,14 @@ const EditOrganization = () => {
     setLoading(true);
     e.preventDefault();
     try {
-      const response = await axios.put(
-        `http://localhost:5000/api/organization/${id}`,
-        organization,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (response.data.success) {
+      const response = await updateOrganization(id,organization);
+      if (response.success) {
         setReload(!reload);
         setAlertOn(true);
         setSnackBarMessage("Updated Sucessfully!!");
       }
     } catch (error) {
-      if (error.response && !error.response.data.success) {
+      if (error.response && !error.response.success) {
         console.log(error.response);
       }
     }
@@ -195,7 +177,6 @@ const EditOrganization = () => {
                         label="Name"
                         type="text"
                         fullWidth
-                        focused
                         variant="outlined"
                         value={organization.name}
                         onChange={handleChange}
@@ -211,7 +192,6 @@ const EditOrganization = () => {
                         fullWidth
                         variant="outlined"
                         value={organization.email}
-                        focused
                         onChange={handleChange}
                       />
                     </Grid>
@@ -224,7 +204,6 @@ const EditOrganization = () => {
                         type="text"
                         fullWidth
                         variant="outlined"
-                        focused
                         value={organization.phone}
                         onChange={handleChange}
                       />
@@ -240,7 +219,6 @@ const EditOrganization = () => {
                         required
                         type="text"
                         variant="outlined"
-                        focused
                         value={organization.address}
                         onChange={handleChange}
                       />
