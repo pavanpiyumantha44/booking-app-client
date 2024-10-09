@@ -26,7 +26,13 @@ import { useAuth } from "../../context/authContext";
 import { Outlet, useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
-import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import CorporateFareIcon from "@mui/icons-material/CorporateFare";
+
+import Avatar from "@mui/material/Avatar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Badge from "@mui/material/Badge";
+import MailIcon from "@mui/icons-material/Mail";
 
 const drawerWidth = 240;
 
@@ -129,7 +135,7 @@ export default function Dashboard() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [menuItem, setMenuItem] = useState("Dashboard");
-  const [selected,setSelected] = useState("Summary");
+  const [selected, setSelected] = useState("Summary");
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -142,12 +148,36 @@ export default function Dashboard() {
   const { user, logout } = useAuth();
   const handleLogout = () => {
     logout();
+    handleMenuClose();
+  };
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  // Handle the opening and closing of the avatar menu
+  const handleAvatarClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  function notificationsLabel(count) {
+    if (count === 0) {
+      return "no notifications";
+    }
+    if (count > 99) {
+      return "more than 99 notifications";
+    }
+    return `${count} notifications`;
+  }
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar
+        position="fixed"
+        open={open}
+        sx={{ bgcolor: "white", color: "black" }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -167,11 +197,30 @@ export default function Dashboard() {
             Booking App
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Typography variant="h6" noWrap component="div">
-            Welcome {user && user.name}!
-          </Typography>
+          <IconButton aria-label={notificationsLabel(100)}>
+            <Badge badgeContent={100} color="secondary">
+              <MailIcon />
+            </Badge>
+          </IconButton>
+          <Avatar
+            alt={user?.name || "User"}
+            src="/static/images/avatar/1.jpg" // Provide a default avatar image
+            onClick={handleAvatarClick}
+            sx={{ cursor: "pointer", marginLeft: 2 }} // Add marginLeft to create space
+          />
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem>Profile</MenuItem>
+            <MenuItem>Settings</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            {/* Add more menu items as needed */}
+          </Menu>
         </Toolbar>
       </AppBar>
+
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
@@ -184,13 +233,17 @@ export default function Dashboard() {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItem disablePadding sx={{ display: "block"}}>
+          <ListItem disablePadding sx={{ display: "block" }}>
             <NavLink
               to="/dashboard"
-              style={{ textDecoration: "none", color: "inherit"}}
+              style={{ textDecoration: "none", color: "inherit" }}
               onClick={() => setMenuItem("Dashboard")}
             >
-              <ListItemButton style={{borderLeft: menuItem === "Dashboard" ? '5px solid #185EA5' : 'none',}}
+              <ListItemButton
+                style={{
+                  borderLeft:
+                    menuItem === "Dashboard" ? "5px solid #185EA5" : "none",
+                }}
                 sx={[
                   {
                     minHeight: 48,
@@ -220,7 +273,9 @@ export default function Dashboard() {
                         },
                   ]}
                 >
-                  <DashboardIcon color={menuItem==="Dashboard"?"primary":""}/>
+                  <DashboardIcon
+                    color={menuItem === "Dashboard" ? "primary" : ""}
+                  />
                 </ListItemIcon>
                 <ListItemText
                   primary="Dashboard"
@@ -237,14 +292,18 @@ export default function Dashboard() {
               </ListItemButton>
             </NavLink>
           </ListItem>
-          {[,"Organizations","Schedules", "Calendar"].map((text, index) => (
+          {[, "Organizations", "Schedules", "Calendar"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <NavLink
                 to={`/dashboard/${text.toLowerCase()}`} // Use dynamic path based on the text
                 style={{ textDecoration: "none", color: "inherit" }} // Keep the same text styling
                 onClick={() => setMenuItem(text)} // Handle menu item click
               >
-                <ListItemButton style={{borderLeft: menuItem === text ? '5px solid #185EA5' : 'none'}}
+                <ListItemButton
+                  style={{
+                    borderLeft:
+                      menuItem === text ? "5px solid #185EA5" : "none",
+                  }}
                   sx={[
                     {
                       minHeight: 48,
@@ -274,10 +333,26 @@ export default function Dashboard() {
                           },
                     ]}
                   >
-                    {text === "Schedules" && <EventNoteIcon color={menuItem==="Schedules"?"primary":""}/>}
-                    {text === "Calendar" && <CalendarMonthIcon color={menuItem==="Calendar"?"primary":""}/>}
-                    {text === "Dashboard" && <DashboardIcon color={menuItem==="Dashboard"?"primary":""}/>}
-                    {text === "Organizations" && <CorporateFareIcon color={menuItem==="Organizations"?"primary":""}/>}
+                    {text === "Schedules" && (
+                      <EventNoteIcon
+                        color={menuItem === "Schedules" ? "primary" : ""}
+                      />
+                    )}
+                    {text === "Calendar" && (
+                      <CalendarMonthIcon
+                        color={menuItem === "Calendar" ? "primary" : ""}
+                      />
+                    )}
+                    {text === "Dashboard" && (
+                      <DashboardIcon
+                        color={menuItem === "Dashboard" ? "primary" : ""}
+                      />
+                    )}
+                    {text === "Organizations" && (
+                      <CorporateFareIcon
+                        color={menuItem === "Organizations" ? "primary" : ""}
+                      />
+                    )}
                   </ListItemIcon>
                   <ListItemText
                     primary={text}
@@ -330,7 +405,7 @@ export default function Dashboard() {
                         },
                   ]}
                 >
-                  <LogoutIcon/>
+                  <LogoutIcon />
                 </ListItemIcon>
                 <ListItemText
                   primary="Logout"

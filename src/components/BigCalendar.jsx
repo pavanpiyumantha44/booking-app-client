@@ -4,26 +4,31 @@ import { dayjsLocalizer } from 'react-big-calendar';
 import dayjs from 'dayjs';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } from '@mui/material';
+import AddBooking from '../pages/AddBooking';
 
 export default function BigCalendar() {
   const [myEvents, setEvents] = useState([]);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [newEvent, setNewEvent] = useState({ title: '', name: '', contact: '', start: null, end: null });
+  const [newEvent2, setNewEvent2] = useState({ title: 'Tennis', name: '', email:'', phone: '', start: null, end: null });
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   const localizer = dayjsLocalizer(dayjs);
 
-  // Open dialog when user selects a slot, but only allow times between 8:00 AM and 6:00 PM
+  // Open dialog when user selects a slot, but only allow future dates and times between 8:00 AM and 6:00 PM
   const handleSelectSlot = useCallback(({ start, end }) => {
+    const now = new Date(); // Current date and time
     const startHour = start.getHours();
     const endHour = end.getHours();
 
-    if (startHour >= 8 && endHour <= 18) {
+    if (start < now.setHours(0, 0, 0, 0)) {
+      alert('You cannot add events to past dates.');
+    } else if (startHour < 8 || endHour > 18) {
+      alert('You can only add events between 8:00 AM and 6:00 PM.');
+    } else {
       setNewEvent({ title: '', name: '', contact: '', start, end }); // Reset form for new event
       setOpenAddDialog(true); // Open the Add Event modal
-    } else {
-      alert('You can only add events between 8:00 AM and 6:00 PM.');
     }
   }, []);
 
@@ -52,7 +57,7 @@ export default function BigCalendar() {
 
   const { defaultDate, scrollToTime } = useMemo(
     () => ({
-      defaultDate: new Date(2024, 10, 7),
+      defaultDate: new Date(),
       scrollToTime: new Date(1970, 1, 1, 8),
     }),
     []
@@ -81,7 +86,7 @@ export default function BigCalendar() {
 
   return (
     <Fragment>
-      <div style={{ height: '60vh' }}>
+      <div style={{ height: '40vh',width:'80%',marginTop:'5%' }}>
         <Calendar
           defaultDate={defaultDate}
           defaultView={Views.WEEK}
@@ -100,7 +105,7 @@ export default function BigCalendar() {
       </div>
 
       {/* Dialog for adding a new event */}
-      <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)}>
+      {/* <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)}>
         <DialogTitle>Add New Event</DialogTitle>
         <DialogContent>
           <TextField
@@ -124,6 +129,18 @@ export default function BigCalendar() {
             onChange={(e) => setNewEvent({ ...newEvent, contact: e.target.value })}
             margin="dense"
           />
+                        <TextField
+                label="Start Date/Time"
+                fullWidth
+                value={formatDateTime(selectedEvent.start)}
+                margin="dense"
+              />
+              <TextField
+                label="End Date/Time"
+                fullWidth
+                value={formatDateTime(selectedEvent.end)}
+                margin="dense"
+              />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenAddDialog(false)} color="primary">
@@ -133,8 +150,8 @@ export default function BigCalendar() {
             Add Event
           </Button>
         </DialogActions>
-      </Dialog>
-
+      </Dialog> */}
+      <AddBooking openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} handleAddEvent={handleAddEvent} startDttm={newEvent.start} endDttm={newEvent.end} />
       {/* Dialog for showing event details */}
       <Dialog open={openDetailsDialog} onClose={() => setOpenDetailsDialog(false)}>
         <DialogTitle>Event Details</DialogTitle>
@@ -156,9 +173,16 @@ export default function BigCalendar() {
                 margin="dense"
               />
               <TextField
+                label="Email"
+                fullWidth
+                value={selectedEvent.email}
+                InputProps={{ readOnly: true }}
+                margin="dense"
+              />
+              <TextField
                 label="Contact Number"
                 fullWidth
-                value={selectedEvent.contact}
+                value={selectedEvent.phone}
                 InputProps={{ readOnly: true }}
                 margin="dense"
               />

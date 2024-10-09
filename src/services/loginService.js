@@ -7,7 +7,7 @@ const loginService = async({email,password})=>{
         const response = await axios.post(`${BASE_URL}/api/auth/login`,{email,password});
         return response.data;
     } catch (error) {
-        console.log(error);
+        throw error.response ? error.response.data.error : new Error("Server Error");
     }
 }
 

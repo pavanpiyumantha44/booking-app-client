@@ -37,7 +37,7 @@ function NavBar() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{color:'black',backgroundColor:'#dfe5f0'}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Left Side Logo */}
@@ -130,7 +130,8 @@ function NavBar() {
                 to={`/${page.toLowerCase()}`}
                 style={{
                   marginLeft: "16px",
-                  color: "white",
+                  color: "black",
+                  fontWeight:500,
                   display: "block",
                   textDecoration: "none",
                   mx: 2,

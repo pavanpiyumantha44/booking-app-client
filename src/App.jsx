@@ -10,13 +10,15 @@ import Schedules from './pages/Dashboard/Schedules'
 import Organizations from './pages/Dashboard/Organizations'
 import EditOrganization from './pages/Dashboard/EditOrganization'
 import Booking from './pages/Booking'
+import HomePage from './pages/HomePage'
+import LoginPage from './pages/LoginPage'
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/login' element={<Login/>}/>
+        <Route path='/' element={<HomePage/>}/>
+        <Route path='/login' element={<LoginPage/>}/>
         <Route path='/booking' element={<Booking/>}/>
         <Route path='/dashboard' element={<PrivateRoutes><Dashboard/></PrivateRoutes>}>
           <Route index element={<Summary/>}></Route>
