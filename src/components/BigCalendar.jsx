@@ -10,8 +10,7 @@ export default function BigCalendar() {
   const [myEvents, setEvents] = useState([]);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-  const [newEvent, setNewEvent] = useState({ title: '', name: '', contact: '', start: null, end: null });
-  const [newEvent2, setNewEvent2] = useState({ title: 'Tennis', name: '', email:'', phone: '', start: null, end: null });
+  const [newEvent, setNewEvent] = useState({ title: 'Tennis',isSlRecident:'', isEquipementsRequired:'', isCochingSessionsRequired:'',name: '', contact: '', start: null, end: null });
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   const localizer = dayjsLocalizer(dayjs);
@@ -86,7 +85,7 @@ export default function BigCalendar() {
 
   return (
     <Fragment>
-      <div style={{ height: '40vh',width:'80%',marginTop:'5%' }}>
+      <div style={{ height: '60vh',width:'80%',marginTop:'5%' }}>
         <Calendar
           defaultDate={defaultDate}
           defaultView={Views.WEEK}
@@ -103,55 +102,7 @@ export default function BigCalendar() {
           max={new Date(1970, 1, 1, 18, 0, 0)} // 6:00 PM
         />
       </div>
-
-      {/* Dialog for adding a new event */}
-      {/* <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)}>
-        <DialogTitle>Add New Event</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Event Title"
-            fullWidth
-            value={newEvent.title}
-            onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-            margin="dense"
-          />
-          <TextField
-            label="Name"
-            fullWidth
-            value={newEvent.name}
-            onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
-            margin="dense"
-          />
-          <TextField
-            label="Contact Number"
-            fullWidth
-            value={newEvent.contact}
-            onChange={(e) => setNewEvent({ ...newEvent, contact: e.target.value })}
-            margin="dense"
-          />
-                        <TextField
-                label="Start Date/Time"
-                fullWidth
-                value={formatDateTime(selectedEvent.start)}
-                margin="dense"
-              />
-              <TextField
-                label="End Date/Time"
-                fullWidth
-                value={formatDateTime(selectedEvent.end)}
-                margin="dense"
-              />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenAddDialog(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleAddEvent} color="primary">
-            Add Event
-          </Button>
-        </DialogActions>
-      </Dialog> */}
-      <AddBooking openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} handleAddEvent={handleAddEvent} startDttm={newEvent.start} endDttm={newEvent.end} />
+      <AddBooking openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} handleAddEvent={handleAddEvent} startDttm={newEvent.start} endDttm={newEvent.end} newEvent={newEvent} setNewEvent={setNewEvent}/>
       {/* Dialog for showing event details */}
       <Dialog open={openDetailsDialog} onClose={() => setOpenDetailsDialog(false)}>
         <DialogTitle>Event Details</DialogTitle>
@@ -162,42 +113,42 @@ export default function BigCalendar() {
                 label="Event Title"
                 fullWidth
                 value={selectedEvent.title}
-                InputProps={{ readOnly: true }}
+                readonly
                 margin="dense"
               />
               <TextField
                 label="Name"
                 fullWidth
                 value={selectedEvent.name}
-                InputProps={{ readOnly: true }}
+                readonly
                 margin="dense"
               />
               <TextField
                 label="Email"
                 fullWidth
                 value={selectedEvent.email}
-                InputProps={{ readOnly: true }}
+                readonly
                 margin="dense"
               />
               <TextField
                 label="Contact Number"
                 fullWidth
                 value={selectedEvent.phone}
-                InputProps={{ readOnly: true }}
+                readonly
                 margin="dense"
               />
               <TextField
                 label="Start Date/Time"
                 fullWidth
                 value={formatDateTime(selectedEvent.start)}
-                InputProps={{ readOnly: true }}
+                readonly
                 margin="dense"
               />
               <TextField
                 label="End Date/Time"
                 fullWidth
                 value={formatDateTime(selectedEvent.end)}
-                InputProps={{ readOnly: true }}
+                readonly
                 margin="dense"
               />
             </>

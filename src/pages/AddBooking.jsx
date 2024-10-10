@@ -11,11 +11,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import dayjs from "dayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import BigCalendar from "../components/BigCalendar";
+
 const steps = ["Services","User Info", "Complete Booking"];
 const AddBooking = ({
   openAddDialog,
@@ -23,6 +19,8 @@ const AddBooking = ({
   handleAddEvent,
   startDttm,
   endDttm,
+  newEvent,
+  setNewEvent
 }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
@@ -84,7 +82,6 @@ const AddBooking = ({
     setCompleted({});
   };
 
-  const handleChange = () => {};
   const handleSubmit = () => {};
   const [sl, setSl] = useState("");
 
@@ -168,16 +165,14 @@ const AddBooking = ({
                             <Select
                               labelId="demo-simple-select-label"
                               id="demo-simple-select"
-                              value={isSlRecident}
-                              onChange={(e) => {
-                                setIsSlRecident(e.target.value);
-                              }}
+                              value={newEvent.isSlRecident}
+                              onChange={(e) => setNewEvent({ ...newEvent, isSlRecident: e.target.value })}
                             >
                               <MenuItem value={"Yes"}>Yes</MenuItem>
                               <MenuItem value={"No"}>No</MenuItem>
                             </Select>
                           </FormControl>
-                          {isSlRecident === "No" ? (
+                          {newEvent.isSlRecident === "No" ? (
                             <>
                               <FormControl fullWidth sx={{ mt: "10px" }}>
                                 <InputLabel
@@ -189,10 +184,8 @@ const AddBooking = ({
                                 <Select
                                   labelId="demo-simple-select-label"
                                   id="demo-simple-select"
-                                  value={isEquipmentsRequired}
-                                  onChange={(e) => {
-                                    setIsEquipmentsRequired(e.target.value);
-                                  }}
+                                  value={newEvent.isEquipementsRequired}
+                                  onChange={(e) => setNewEvent({ ...newEvent, isEquipementsRequired: e.target.value })}
                                 >
                                   <MenuItem value={"Yes"}>Yes</MenuItem>
                                   <MenuItem value={"No"}>No</MenuItem>
@@ -208,12 +201,8 @@ const AddBooking = ({
                                 <Select
                                   labelId="demo-simple-select-label"
                                   id="demo-simple-select"
-                                  value={isCoachingSessionsRequired}
-                                  onChange={(e) => {
-                                    setIsCoachingSessionsRequired(
-                                      e.target.value
-                                    );
-                                  }}
+                                  value={newEvent.isCochingSessionsRequired}
+                                  onChange={(e) => setNewEvent({ ...newEvent, isCochingSessionsRequired: e.target.value })}
                                 >
                                   <MenuItem value={"Yes"}>Yes</MenuItem>
                                   <MenuItem value={"No"}>No</MenuItem>
@@ -223,41 +212,12 @@ const AddBooking = ({
                           ) : (
                             <></>
                           )}
-                          <Button onClick={handleAddEvent}>Done</Button>
                         </form>
                       </>
                     )}
                     {activeStep == 1 && (
                       <>
                         <form onSubmit={handleSubmit}>
-                          {/* <Grid2 container spacing={2}>
-                            <Grid2 size={{ sm: 12, md: 6, lg: 6 }}>
-                              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DemoContainer components={["DateTimePicker"]}>
-                                  <DateTimePicker
-                                    label="Start Date Time"
-                                    value={startValue}
-                                    onChange={(newValue) =>
-                                      setStartValue(newValue)
-                                    }
-                                  />
-                                </DemoContainer>
-                              </LocalizationProvider>
-                            </Grid2>
-                            <Grid2 size={{ sm: 12, md: 6, lg: 6 }}>
-                              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DemoContainer components={["DateTimePicker"]}>
-                                  <DateTimePicker
-                                    label="End Date Time"
-                                    value={endValue}
-                                    onChange={(newValue) =>
-                                      setEndValue(newValue)
-                                    }
-                                  />
-                                </DemoContainer>
-                              </LocalizationProvider>
-                            </Grid2>
-                          </Grid2> */}
                           <TextField
                             required
                             margin="dense"
@@ -266,8 +226,8 @@ const AddBooking = ({
                             type="text"
                             fullWidth
                             variant="outlined"
-                            value={name}
-                            onChange={(e)=>{setName(e.target.value)}}
+                            value={newEvent.name}
+                            onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
                           />
                           <TextField
                             required
@@ -277,8 +237,8 @@ const AddBooking = ({
                             type="email"
                             fullWidth
                             variant="outlined"
-                            value={email}
-                            onChange={(e)=>{setEmail(e.target.value)}}
+                            value={newEvent.email}
+                            onChange={(e) => setNewEvent({ ...newEvent, email: e.target.value })}
                           />
                           <TextField
                             required
@@ -287,9 +247,9 @@ const AddBooking = ({
                             label="Contact Number"
                             type="text"
                             fullWidth
-                            value={phone}
+                            value={newEvent.phone}
                             variant="outlined"
-                            onChange={(e)=>{setPhone(e.target.value)}}
+                            onChange={(e) => setNewEvent({ ...newEvent, phone: e.target.value })}
                           />
                         </form>
                       </>
@@ -298,9 +258,9 @@ const AddBooking = ({
                         <Grid2 container>
                           <Grid2 size={{xs:12,sm:12,md:6,lg:6}} style={{padding:'10px'}}>
                             <Box sx={{width:'100%',borderRadius:'10px',height:'150px',display:'flex',justifyContent:"start",flexDirection:'column'}}>
-                            <Typography variant="body1">Name : {name}</Typography>
-                            <Typography variant="body1">Email : {email}</Typography>
-                            <Typography variant="body1">Phone : {phone}</Typography>
+                            <Typography variant="body1">Name : {newEvent.name}</Typography>
+                            <Typography variant="body1">Email : {newEvent.email}</Typography>
+                            <Typography variant="body1">Phone : {newEvent.phone}</Typography>
                             </Box>
                           </Grid2>
                           <Grid2 size={{xs:12,sm:12,md:6,lg:6}}>

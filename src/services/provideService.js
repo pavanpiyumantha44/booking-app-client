@@ -14,6 +14,14 @@ const getServices = async(id)=>{
         console.log(error);
     }
 }
+const getAllServices = async()=>{
+    try {
+        const response = await axios.get(`${BASE_URL}/api/service/`)
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 const addService = async(service)=>{
     try {
@@ -28,4 +36,4 @@ const addService = async(service)=>{
     }
 }
 
-export {addService,getServices}
+export {addService,getAllServices,getServices}

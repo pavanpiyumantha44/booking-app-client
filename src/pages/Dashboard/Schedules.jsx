@@ -3,6 +3,7 @@ import React from "react";
 import BasicCard from "../../components/Card";
 import Grid from "@mui/material/Grid2";
 import { NavLink } from "react-router-dom";
+import BigCalendar from "../../components/BigCalendar";
 
 const breadcrumbs = [
   <NavLink
@@ -39,37 +40,34 @@ const initialEvents = [
 const Schedules = () => {
   return (
     <>
+      <Grid container spacing={2}>
+        <Grid size={12} sx={{ padding: "20px" }}>
+          <Stack spacing={2}>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 8, md: 10, lg: 10 }}>
+                <Breadcrumbs separator="›" aria-label="breadcrumb">
+                  {breadcrumbs}
+                </Breadcrumbs>
+              </Grid>
+              <Grid
+                size={{ xs: 4, md: 2, lg: 2 }}
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+              ></Grid>
+            </Grid>
+          </Stack>
+        </Grid>
+      </Grid>
       <Box
         sx={{
           height: "90vh",
-          display: "flex",
-          flexDirection: "column",
           padding: "50px",
+          width: "fullWidth",
         }}
       >
-        <Grid container spacing={2}>
-          <Grid size={12} sx={{ padding: "20px" }}>
-            <Stack spacing={2}>
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 8, md: 10, lg: 10 }}>
-                  <Breadcrumbs separator="›" aria-label="breadcrumb">
-                    {breadcrumbs}
-                  </Breadcrumbs>
-                </Grid>
-                <Grid
-                  size={{ xs: 4, md: 2, lg: 2 }}
-                  sx={{ display: "flex", justifyContent: "flex-end" }}
-                ></Grid>
-              </Grid>
-            </Stack>
+        <Grid container>
+          <Grid size={12}>
+            <BigCalendar />
           </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-          {initialEvents.map((key, val) => (
-            <Grid size={{ sm: 12, md: 4, lg: 4 }} key={key}>
-              <BasicCard no={1} startDttm={val.start} endDttm={val.end} />
-            </Grid>
-          ))}
         </Grid>
       </Box>
     </>
