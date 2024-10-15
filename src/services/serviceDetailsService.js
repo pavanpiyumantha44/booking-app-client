@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = 'https://booking-app-backend-pearl.vercel.app';
+const BASE_URL = 'http://localhost:5000';
 
 const getServiceDetails = async(id)=>{
     try {
