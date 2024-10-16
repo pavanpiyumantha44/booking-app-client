@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = 'https://booking-app-backend-xi.vercel.app'
+const BASE_URL = process.env.REACT_APP_SERVER_API_URL;
 
 const getServices = async(id)=>{
     try {
