@@ -10,10 +10,9 @@ import FormControl from "@mui/material/FormControl";
 import { getAllServices } from "../services/provideService";
 import { getAllServiceDetails } from "../services/serviceDetailsService";
 
-
 const Booking = () => {
   const [serviceDetails, setServiceDetails] = useState([]);
-  const [selectedServiceDetails, setSelectedServiceDetails] = useState('');
+  const [selectedServiceDetails, setSelectedServiceDetails] = useState("");
 
   useEffect(() => {
     const getServiceDetails = async () => {
@@ -23,10 +22,10 @@ const Booking = () => {
           const data = await response.serviceDetails.map((detail) => ({
             id: detail._id,
             serviceId: detail.serviceId._id,
-            service:detail.serviceId.name,
+            service: detail.serviceId.name,
             providedService: detail.providedService,
             description: detail.description,
-            isAvailable:detail.isAvailable,
+            isAvailable: detail.isAvailable,
           }));
           console.log(data);
           setServiceDetails(data); // This should update your state correctly
@@ -45,6 +44,7 @@ const Booking = () => {
           height: "100vh",
           display: "flex",
           flexDirection: "column",
+          marginBottom:'4%'
         }}
       >
         <Box
@@ -61,7 +61,7 @@ const Booking = () => {
             SELECT BOOKING TYPE
           </Typography>
         </Box>
-        <Box sx={{ width: "60%", marginLeft: "auto",marginRight:'auto' }}>
+        <Box sx={{ width: "80%", marginLeft: "auto", marginRight: "auto" }}>
           <Grid2 container spacing={2} mt={3}>
             <Grid2 size={8}>
               <FormControl fullWidth sx={{ mt: "10px" }}>
@@ -80,7 +80,7 @@ const Booking = () => {
                   {serviceDetails.length > 0 ? (
                     serviceDetails.map((val, key) => (
                       <MenuItem value={val.id} key={key}>
-                        {val.service+" - "+val.providedService}
+                        {val.service + " - " + val.providedService}
                       </MenuItem>
                     ))
                   ) : (
@@ -105,7 +105,9 @@ const Booking = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            width: "100%",
+            width: "80%",
+            marginLeft:'auto',
+            marginRight:'auto',
           }}
         >
           <BigCalendar />

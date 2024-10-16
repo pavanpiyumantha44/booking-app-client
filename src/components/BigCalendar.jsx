@@ -85,7 +85,7 @@ export default function BigCalendar() {
 
   return (
     <Fragment>
-      <div style={{ height: '60vh',width:'80%',marginTop:'5%' }}>
+      <div style={{ height: '60vh',width:'100%',marginTop:'5%' }}>
         <Calendar
           defaultDate={defaultDate}
           defaultView={Views.WEEK}

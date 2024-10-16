@@ -292,7 +292,7 @@ export default function Dashboard() {
               </ListItemButton>
             </NavLink>
           </ListItem>
-          {[, "Organizations", "Schedules", "Calendar"].map((text, index) => (
+          {[, "Organizations", "Schedules"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <NavLink
                 to={`/dashboard/${text.toLowerCase()}`} // Use dynamic path based on the text
@@ -336,11 +336,6 @@ export default function Dashboard() {
                     {text === "Schedules" && (
                       <EventNoteIcon
                         color={menuItem === "Schedules" ? "primary" : ""}
-                      />
-                    )}
-                    {text === "Calendar" && (
-                      <CalendarMonthIcon
-                        color={menuItem === "Calendar" ? "primary" : ""}
                       />
                     )}
                     {text === "Dashboard" && (
