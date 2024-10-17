@@ -106,7 +106,7 @@ export default function BasicGrid() {
           mt={7}
           mb={5}
         >
-          <Grid size={{ xs: 12, sm: 12, md: 5, lg: 5 }}>
+          <Grid size={{ xs: 12, sm: 12, md: 4, lg: 4 }}>
           <Box style={{display:'flex',justifyContent:'center'}}>
             <Typography variant="h5" color="primary" my={3}>
               OPENING HOURS
@@ -180,7 +180,7 @@ export default function BasicGrid() {
               </Typography>
             </Item>
           </Grid>
-          <Grid size={{ xs: 12, sm: 12, md: 5, lg: 5 }}>
+          <Grid size={{ xs: 12, sm: 12, md: 4, lg: 4 }}>
             <Box style={{display:'flex',justifyContent:'center'}}>
             <Typography variant="h5" color="primary" mt={3}>
               CONTACT
@@ -221,6 +221,18 @@ export default function BasicGrid() {
               </Box>
             </Box>
             </Item>
+          </Grid>
+          <Grid size={{xs:12,sm:12,md:4,lg:4}} sx={{paddingLeft:'20px',paddingRight:'20px'}}>
+          <Box style={{display:'flex',justifyContent:'center'}}>
+            <Typography variant="h5" color="primary" mt={3}>
+              LOCATION
+            </Typography>
+            </Box>
+          <Box style={{width: '100%',marginTop:'35px'}}>
+            <iframe width="100%" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" borderRadius="5" title="Kandy Garden Club" src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=9%20Sangaraja%20Mawatha,%20Kandy%2020000+(Kandy%20Garden%20Club)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed">
+              <a href="https://www.gps.ie/">gps tracker sport</a>
+            </iframe>
+          </Box>
           </Grid>
         </Grid>
         <Footer />
