@@ -5,19 +5,22 @@ import NavBar from "../components/NavBar";
 import { useAuth } from "../context/authContext";
 import { Link, useNavigate } from "react-router-dom";
 import loginService from "../services/loginService";
-import { Button, TextField, Typography } from "@mui/material";
+import { Button,TextField, Typography } from "@mui/material";
 import Footer from "../components/Footer";
 import LoginImg from "./../assets/bg.jpg";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isProcessing,setIsProcessing] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsProcessing(true);
     try {
       const response = await loginService({ email, password });
       if (response.success) {
@@ -25,10 +28,12 @@ const LoginPage = () => {
         localStorage.setItem("token", response.token);
         if (response.user) {
           navigate("/dashboard");
+          setIsProcessing(false);
         }
       }
     } catch (error) {
       if (error) {
+        setIsProcessing(false);
         setError(error);
       } else {
         setError("Server Error");
@@ -115,8 +120,9 @@ const LoginPage = () => {
                   fullWidth
                   color="primary"
                   sx={{ my: 2 }}
+                  disabled={isProcessing}
                 >
-                  Login
+                  {isProcessing ? <span>Verifying...</span> : "Login"}
                 </Button>
               </form>
               <Link to={""} style={{ color: "darkblue" }}>
