@@ -14,7 +14,6 @@ export default function AddServiceDialog({id,reload,setReload}) {
   const [service, setService] = useState({
     name: "",
     description: "",
-    cost: "",
     orgId:id
   });
   const handleChange = (e) => {
@@ -59,17 +58,6 @@ export default function AddServiceDialog({id,reload,setReload}) {
               name="name"
               label="Name"
               type="text"
-              fullWidth
-              variant="outlined"
-              onChange={handleChange}
-            />
-            <TextField
-              required
-              margin="dense"
-              name="cost"
-              label="Cost for (1H)"
-              type="number"
-              min={0}
               fullWidth
               variant="outlined"
               onChange={handleChange}

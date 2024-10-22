@@ -18,6 +18,7 @@ export default function AddServiceDetailsDialog({ id, reload, setReload, service
   const [serviceId,setServiceId] = useState();
   const [providedService,setProvidedService] = useState();
   const [description,setDescription] = useState();
+  const [cost,setCost] = useState();
   const [isAvailable,setIsAvailable] = useState(true);
   const [orgId,setOrgId] = useState(id);
 
@@ -25,7 +26,7 @@ export default function AddServiceDetailsDialog({ id, reload, setReload, service
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await addServiceDetails({providedService,description,isAvailable,orgId,serviceId});
+      const response = await addServiceDetails({providedService,description,cost,isAvailable,orgId,serviceId});
       if (response.success) {
         setReload(!reload);
         handleClose();
@@ -89,6 +90,17 @@ export default function AddServiceDetailsDialog({ id, reload, setReload, service
               type="text"
               variant="outlined"
               onChange={(e)=>{setDescription(e.target.value)}}
+            />
+             <TextField
+              required
+              margin="dense"
+              name="cost"
+              label="Cost for (1H)"
+              type="number"
+              min={0}
+              fullWidth
+              variant="outlined"
+              onChange={(e)=>{setCost(e.target.value)}}
             />
             <DialogActions>
               <Button onClick={handleClose} color="primary">

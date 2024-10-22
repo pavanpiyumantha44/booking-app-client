@@ -23,10 +23,10 @@ const getAllServiceDetails = async()=>{
     }
 }
 
-const addServiceDetails = async({providedService,description,isAvailable,orgId,serviceId})=>{
+const addServiceDetails = async({providedService,description,cost,isAvailable,orgId,serviceId})=>{
     try {
         const response = await axios.post(`${BASE_URL}/api/serviceDetail/add`,
-        {providedService,description,isAvailable,orgId,serviceId},
+        {providedService,description,cost,isAvailable,orgId,serviceId},
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

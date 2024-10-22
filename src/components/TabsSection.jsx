@@ -45,7 +45,7 @@ export default function TabsSection({ id, services,serviceDetails, reload, setRe
       field: "name",
       headerName: "Name",
       flex: 1,
-      editable: true,
+      editable: false,
       renderCell: (params) => (
         <span
           style={{ cursor: "pointer" }}
@@ -59,13 +59,7 @@ export default function TabsSection({ id, services,serviceDetails, reload, setRe
       field: "description",
       headerName: "Description",
       flex: 1,
-      editable: true,
-    },
-    {
-      field: "cost",
-      headerName: "Cost (1H)",
-      flex: 1,
-      editable: true,
+      editable: false,
     },
   ];
 
@@ -75,13 +69,13 @@ export default function TabsSection({ id, services,serviceDetails, reload, setRe
       field: "service",
       headerName: "Service",
       flex: 1,
-      editable: true,
+      editable: false,
     },
     {
       field: "providedService",
       headerName: "Provided Service",
       flex: 1,
-      editable: true,
+      editable: false,
       renderCell: (params) => (
         <span style={{ cursor: "pointer" }}>
           {params.value}
@@ -92,13 +86,19 @@ export default function TabsSection({ id, services,serviceDetails, reload, setRe
       field: "description",
       headerName: "Description",
       flex: 1,
-      editable: true,
+      editable: false,
+    },
+    {
+      field: "cost",
+      headerName: "Cost (1H)",
+      flex: 1,
+      editable: false,
     },
     {
       field: "isAvailable",
       headerName: "Availability",
       flex: 1,
-      editable: true,
+      editable: false,
       renderCell: (params) => (
         params.value ? (
           <Chip label="Available" color="success" />
@@ -108,6 +108,7 @@ export default function TabsSection({ id, services,serviceDetails, reload, setRe
       ),
     },
   ];
+  
   
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {

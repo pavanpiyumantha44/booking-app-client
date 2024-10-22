@@ -72,7 +72,6 @@ const EditOrganization = () => {
           const data = await servicesResponse.services.map((service) => ({
             id: service._id,
             name: service.name,
-            cost: service.cost,
             description: service.description,
           }));
           setServices(data);
@@ -91,6 +90,7 @@ const EditOrganization = () => {
             service:detail.serviceId.name,
             providedService: detail.providedService,
             description: detail.description,
+            cost:detail.cost,
             isAvailable:detail.isAvailable,
           }));
           setServiceDetails(data);

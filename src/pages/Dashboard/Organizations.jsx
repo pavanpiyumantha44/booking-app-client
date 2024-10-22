@@ -29,7 +29,7 @@ const Organizations = () => {
       field: "name",
       headerName: "Name",
       flex:1,
-      editable: true,
+      editable: false,
       renderCell: (params) => (
         <span
           style={{ cursor: 'pointer'}}
@@ -43,19 +43,19 @@ const Organizations = () => {
       field: "address",
       headerName: "Address",
       flex:1,
-      editable: true,
+      editable: false,
     },
     {
       field: "email",
       headerName: "Email",
       flex:1,
-      editable: true,
+      editable: false,
     },
     {
       field: "phone",
       headerName: "Phone",
       flex:1,
-      editable: true,
+      editable: false,
     },
     {
         field: "action",
