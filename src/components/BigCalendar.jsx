@@ -4,7 +4,7 @@ import { dayjsLocalizer } from 'react-big-calendar';
 import dayjs from 'dayjs';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } from '@mui/material';
-import AddBooking from '../pages/AddBooking';
+import AddBooking from '../pages/Booking/AddBooking';
 
 export default function BigCalendar() {
   const [myEvents, setEvents] = useState([]);

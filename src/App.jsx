@@ -9,9 +9,9 @@ import Summary from './pages/Dashboard/Summary'
 import Schedules from './pages/Dashboard/Schedules'
 import Organizations from './pages/Dashboard/Organizations'
 import EditOrganization from './pages/Dashboard/EditOrganization'
-import Booking from './pages/Booking'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
+import Booking from './pages/Booking/Booking'
 
 const App = () => {
   return (

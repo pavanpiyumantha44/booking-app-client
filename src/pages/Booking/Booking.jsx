@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "../components/NavBar";
-import Footer from "../components/Footer";
+import NavBar from "../../components/NavBar";
+import Footer from "../../components/Footer";
 import { Box, Button, Grid2, Typography } from "@mui/material";
-import BigCalendar from "../components/BigCalendar";
+import BigCalendar from "../../components/BigCalendar";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import { getAllServices } from "../services/provideService";
-import { getAllServiceDetails } from "../services/serviceDetailsService";
+import { getAllServices } from "../../services/provideService";
+import { getAllServiceDetails } from "../../services/serviceDetailsService";
+import CreateBooking from "./CreateBooking";
 
 const Booking = () => {
   const [serviceDetails, setServiceDetails] = useState([]);
   const [selectedServiceDetails, setSelectedServiceDetails] = useState("");
+  const [openAddDialog, setOpenAddDialog] = useState(false);
 
   useEffect(() => {
     const getServiceDetails = async () => {
@@ -97,6 +99,9 @@ const Booking = () => {
               <Button variant="contained" color="primary">
                 Filter
               </Button>
+              <Button variant="contained" color="primary" sx={{marginLeft:'10px'}} onClick={()=>setOpenAddDialog(true)}>
+                Add booking
+              </Button>
             </Grid2>
           </Grid2>
         </Box>
@@ -110,6 +115,7 @@ const Booking = () => {
             marginRight:'auto',
           }}
         >
+          <CreateBooking openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog}/>
           <BigCalendar />
         </Box>
       </Box>
