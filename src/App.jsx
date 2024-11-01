@@ -12,6 +12,7 @@ import EditOrganization from './pages/Dashboard/EditOrganization'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import Booking from './pages/Booking/Booking'
+import AboutUs from './pages/AboutUs'
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<HomePage/>}/>
         <Route path='/login' element={<LoginPage/>}/>
+        <Route path='/about' element={<AboutUs/>}/>
         <Route path='/booking' element={<Booking/>}/>
         <Route path='/dashboard' element={<PrivateRoutes><Dashboard/></PrivateRoutes>}>
           <Route index element={<Summary/>}></Route>

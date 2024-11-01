@@ -18,7 +18,10 @@ export default function FormDialog({reload,setReload}) {
     email: "",
     phone: "",
     address: "",
+    startingTime: "",
+    closingTime: ""
   });
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setOrganization({ ...organization, [name]: value });
@@ -82,6 +85,34 @@ export default function FormDialog({reload,setReload}) {
               name="phone"
               label="Contact Number"
               type="text"
+              fullWidth
+              variant="outlined"
+              onChange={handleChange}
+            />
+            <TextField
+              required
+              margin="dense"
+              name="startingTime"
+              label="Starting Time"
+              type="number"
+              inputProps={{
+                min: 1,  // Set minimum value
+                max: 12  // Set maximum value
+              }}
+              fullWidth
+              variant="outlined"
+              onChange={handleChange}
+            />
+            <TextField
+              required
+              margin="dense"
+              name="closingTime"
+              label="Closing Time"
+              type="number"
+              inputProps={{
+                min: 1,  // Set minimum value
+                max: 12  // Set maximum value
+              }}
               fullWidth
               variant="outlined"
               onChange={handleChange}

@@ -62,22 +62,22 @@ export default function BasicGrid() {
                 }}
               >
                 <Typography
-                  variant="h2"
+                  variant="h3"
                   sx={{
                     color: "white",
                     fontWeight: "bold",
                     textAlign: "center",
                   }}
                 >
-                  Welcome to Our Service
+                  Welcome to the Kandy Garden Club <br/> Service Booking Portal
                 </Typography>
                 <Typography
                   variant="body1"
                   gutterBottom
                   style={{ color: "white", textAlign: "center" }}
                 >
-                  Book your appointment with ease and convenience.Your
-                  satisfaction is our priority!
+                  Book your tennis appointment with ease and convenience. Your satisfaction is our
+                  priority.
                 </Typography>
                 <Button
                   variant="contained"

@@ -14,7 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Link } from "react-router-dom";
 
-const pages = ["Services", "About us", "Contact", "Login"];
+const pages = ["About","Admin Login"];
 //const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function NavBar() {
@@ -125,7 +125,33 @@ function NavBar() {
               justifyContent: "flex-end",
             }}
           >
-            {pages.map((page) => (
+          <Link
+                to={`/about`}
+                style={{
+                  marginLeft: "16px",
+                  color: "black",
+                  fontWeight:500,
+                  display: "block",
+                  textDecoration: "none",
+                  mx: 2,
+                }}
+              >
+                ABOUT US
+              </Link>
+              <Link
+                to={`/login`}
+                style={{
+                  marginLeft: "16px",
+                  color: "black",
+                  fontWeight:500,
+                  display: "block",
+                  textDecoration: "none",
+                  mx: 2,
+                }}
+              >
+                ADMIN LOGIN
+              </Link>
+            {/* {pages.map((page) => (
               <Link
                 to={`/${page.toLowerCase()}`}
                 style={{
@@ -139,7 +165,7 @@ function NavBar() {
               >
                 {page.toUpperCase()}
               </Link>
-            ))}
+            ))} */}
           </Box>
         </Toolbar>
       </Container>
