@@ -13,12 +13,13 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { addServiceDetails } from "../../../services/serviceDetailsService";
 
-export default function AddServiceDetailsDialog({ id, reload, setReload, services }) {
+export default function AddServiceDetailsDialog({ id, reload, setReload,service}) {
   const [open, setOpen] = useState(false);
-  const [serviceId,setServiceId] = useState();
+  const [serviceId,setServiceId] = useState(service.id);
   const [providedService,setProvidedService] = useState();
   const [description,setDescription] = useState();
-  const [cost,setCost] = useState();
+  const [localCost,setLocalCost] = useState();
+  const [foreignCost,setForeignCost] = useState();
   const [isAvailable,setIsAvailable] = useState(true);
   const [orgId,setOrgId] = useState(id);
 
@@ -26,7 +27,7 @@ export default function AddServiceDetailsDialog({ id, reload, setReload, service
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await addServiceDetails({providedService,description,cost,isAvailable,orgId,serviceId});
+      const response = await addServiceDetails({providedService,description,localCost,foreignCost,isAvailable,serviceId});
       if (response.success) {
         setReload(!reload);
         handleClose();
@@ -54,21 +55,18 @@ export default function AddServiceDetailsDialog({ id, reload, setReload, service
         <DialogTitle>New Service Details</DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Service</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={serviceId}
-                onChange={(e)=>{setServiceId(e.target.value)}}
-              >
-                {
-                    services.map((value,key)=>(
-                        <MenuItem value={value.id} key={key}>{value.name}</MenuItem>
-                    ))
-                }
-              </Select>
-            </FormControl>
+            <TextField
+              required
+              margin="dense"
+              name="service"
+              label="service"
+              type="text"
+              fullWidth
+              variant="outlined"
+              disabled
+              value={service.name}
+              onChange={(e)=>{setServiceId(service.id)}}
+            />
             <TextField
               required
               margin="dense"
@@ -94,13 +92,30 @@ export default function AddServiceDetailsDialog({ id, reload, setReload, service
              <TextField
               required
               margin="dense"
-              name="cost"
-              label="Cost for (1H)"
+              name="localCost"
+              label="Cost for 1H (Local) LKR"
               type="number"
               min={0}
               fullWidth
+              inputProps={{
+                min: 1,  // Set minimum value
+              }}
               variant="outlined"
-              onChange={(e)=>{setCost(e.target.value)}}
+              onChange={(e)=>{setLocalCost(e.target.value)}}
+            />
+             <TextField
+              required
+              margin="dense"
+              name="foreignCost"
+              label="Cost for 1H (Foreigners) LKR"
+              type="number"
+              min={0}
+              fullWidth
+              inputProps={{
+                min: 1,  // Set minimum value
+              }}
+              variant="outlined"
+              onChange={(e)=>{setForeignCost(e.target.value)}}
             />
             <DialogActions>
               <Button onClick={handleClose} color="primary">

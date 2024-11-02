@@ -13,7 +13,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import XIcon from "@mui/icons-material/X";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -204,7 +204,7 @@ export default function BasicGrid() {
                 />
                 <Typography variant="h7" style={{ fontWeight: "500" }}>
                   {" "}
-                  0815678674
+                  0812222675
                 </Typography>
               </Box>
               <Box mb={2} style={{display:'flex'}}>
@@ -215,7 +215,7 @@ export default function BasicGrid() {
                 </Typography>
               </Box>
               <Box mb={2} style={{display:'flex'}}>
-                <FacebookIcon sx={{ marginRight: "20px", fontSize: "20px" }} />
+                <Link to="https://web.facebook.com/people/Kandy-Garden-Club/61554364246124/?mibextid=ZbWKwL"><FacebookIcon sx={{ marginRight: "20px", fontSize: "20px", color:'grey' }}/></Link>
                 <LinkedInIcon sx={{ marginRight: "20px", fontSize: "20px" }} />
                 <XIcon sx={{ marginRight: "20px", fontSize: "20px" }} />
               </Box>

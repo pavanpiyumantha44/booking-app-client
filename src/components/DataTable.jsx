@@ -14,7 +14,6 @@ const DataTable = ({rows,cols}) => {
                 },
               }}
               pageSizeOptions={[5]}
-              checkboxSelection
               disableRowSelectionOnClick
             />
   )

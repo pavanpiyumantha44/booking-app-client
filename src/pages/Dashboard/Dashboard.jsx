@@ -18,7 +18,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useState } from "react";
 import EventNoteIcon from "@mui/icons-material/EventNote";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid2";
@@ -27,7 +26,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CorporateFareIcon from "@mui/icons-material/CorporateFare";
-
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -292,7 +291,7 @@ export default function Dashboard() {
               </ListItemButton>
             </NavLink>
           </ListItem>
-          {[, "Organizations", "Schedules"].map((text, index) => (
+          {["Bookings", "Services", "Schedules"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <NavLink
                 to={`/dashboard/${text.toLowerCase()}`} // Use dynamic path based on the text
@@ -343,9 +342,14 @@ export default function Dashboard() {
                         color={menuItem === "Dashboard" ? "primary" : ""}
                       />
                     )}
-                    {text === "Organizations" && (
+                    {text === "Services" && (
                       <CorporateFareIcon
-                        color={menuItem === "Organizations" ? "primary" : ""}
+                        color={menuItem === "Services" ? "primary" : ""}
+                      />
+                    )}
+                    {text === "Bookings" && (
+                      <MenuBookIcon
+                        color={menuItem === "Bookings" ? "primary" : ""}
                       />
                     )}
                   </ListItemIcon>

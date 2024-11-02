@@ -24,14 +24,14 @@ export default function DeleteDialog({id}) {
 
   const handleDelete = async(id)=>{
     try {
-      const response = await axios.delete(`http://localhost:5000/api/organization/${id}`,{
+      const response = await axios.delete(`http://localhost:5000/api/service/${id}`,{
         headers:{
           "Authorization": `Bearer ${localStorage.getItem('token')}`
         }
       })
       if(response.data.success){
         handleClose();
-        navigate('/dashboard/organizations');
+        navigate('/dashboard/services');
       }
     } catch (error) {
       console.log(error.response.error);
@@ -40,7 +40,7 @@ export default function DeleteDialog({id}) {
   return (
     <React.Fragment>
       <IconButton onClick={handleClickOpen}>
-        <DeleteIcon />
+        <DeleteIcon color="error"/>
       </IconButton>
       <Dialog
         open={open}
@@ -53,7 +53,7 @@ export default function DeleteDialog({id}) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this service provider?
+            Are you sure you want to delete this service?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

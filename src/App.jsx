@@ -1,8 +1,6 @@
 import React from 'react'
 import Dashboard from './pages/Dashboard/Dashboard'
-import Home from './pages/Home'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import Login from './pages/Login'
 import PrivateRoutes from './utils/PrivateRoutes'
 import ScheduleCalendar from './pages/Dashboard/ScheduleCalendar'
 import Summary from './pages/Dashboard/Summary'
@@ -13,6 +11,9 @@ import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import Booking from './pages/Booking/Booking'
 import AboutUs from './pages/AboutUs'
+import Bookings from './pages/Dashboard/Bookings'
+import Services from './pages/Dashboard/Services'
+import ServiceDetails from './pages/Dashboard/ServiceDetail'
 
 const App = () => {
   return (
@@ -24,6 +25,9 @@ const App = () => {
         <Route path='/booking' element={<Booking/>}/>
         <Route path='/dashboard' element={<PrivateRoutes><Dashboard/></PrivateRoutes>}>
           <Route index element={<Summary/>}></Route>
+          <Route path='/dashboard/bookings' element={<Bookings/>}></Route>
+          <Route path='/dashboard/services' element={<Services/>}></Route>
+          <Route path='/dashboard/serviceDetails/:id' element={<ServiceDetails/>}></Route>
           <Route path='/dashboard/organizations' element={<Organizations/>}></Route>
           <Route path='/dashboard/organizations/:id' element={<EditOrganization/>}></Route>
           <Route path='/dashboard/schedules' element={<Schedules/>}></Route>
