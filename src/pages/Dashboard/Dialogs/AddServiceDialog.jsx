@@ -11,19 +11,13 @@ import { addService } from "../../../services/provideService";
 
 export default function AddServiceDialog({id,reload,setReload}) {
   const [open, setOpen] = React.useState(false);
-  const [service, setService] = useState({
-    name: "",
-    description: "",
-    orgId:id
-  });
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setService({ ...service, [name]: value });
-  };
+  const [name,setName] = useState();
+  const [description,setDescription] = useState();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-       const response = await addService(service);
+       const response = await addService({name,description,id});
        if(response.success){
           setReload(!reload);
           handleClose();
@@ -60,7 +54,7 @@ export default function AddServiceDialog({id,reload,setReload}) {
               type="text"
               fullWidth
               variant="outlined"
-              onChange={handleChange}
+              onChange={(e)=>{setName(e.target.value)}}
             />
             <TextField
               label="Description"
@@ -72,7 +66,7 @@ export default function AddServiceDialog({id,reload,setReload}) {
               required
               type="text"
               variant="outlined"
-              onChange={handleChange}
+              onChange={(e)=>{setDescription(e.target.value)}}
             />
             <DialogActions>
               <Button onClick={handleClose} color="primary">

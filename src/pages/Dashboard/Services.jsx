@@ -47,7 +47,7 @@ const Services = () => {
       editable: false,
     },
   ];
-  const [organizations,setOrganizations] = useState([]);
+  const [organizationId,setOrganizationId] = useState({});
   const [services,setServices] = useState(null);
   const [reload,setReload] = useState(false);
   const [loading,setLoading] =useState(false);
@@ -60,14 +60,12 @@ const Services = () => {
         setLoading(true);
         const response = await getOrganizations();
         if(response.success){
-          const data = await response.organizations.map((org)=>(
-            {
-              id: org._id,
-            }
-          ));
-          setOrganizations(data);
-          setLoading(false);
-        }
+          const data ={
+              id: response.organizations[0]._id,
+        };
+        setOrganizationId(data);
+        setLoading(false);
+      }
       } catch (error) {
         console.log(error.response.error);
       }
@@ -122,12 +120,13 @@ const Services = () => {
                 </Breadcrumbs>
               </Grid>
               <Grid size={{ xs: 4, md: 2, lg: 2 }} sx={{display:'flex', justifyContent:'flex-end'}}>
-              <AddServiceDialog id={organizations.id} reload={reload} setReload={setReload}/>
+              <AddServiceDialog id={organizationId.id} reload={reload} setReload={setReload}/>
               </Grid>
             </Grid>
           </Stack>
         </Grid>
       </Grid>
+      <Box>Services</Box>
       <Grid size={{ xs: 12, md: 12, lg: 12 }} sx={{ marginTop: "2%" }}>
         <Box sx={{ height: '60vh', width: "100%" }}>
           {

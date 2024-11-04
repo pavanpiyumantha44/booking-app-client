@@ -6,13 +6,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { IconButton } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
 
-export default function DeleteDialog({id}) {
+export default function LogoutDialog({logout}) {
   const [open, setOpen] = React.useState(false);
-  const navigate = useNavigate();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -22,25 +19,14 @@ export default function DeleteDialog({id}) {
     setOpen(false);
   };
 
-  const handleDelete = async(id)=>{
-    try {
-      const response = await axios.delete(`http://localhost:5000/api/service/${id}`,{
-        headers:{
-          "Authorization": `Bearer ${localStorage.getItem('token')}`
-        }
-      })
-      if(response.data.success){
-        handleClose();
-        navigate('/dashboard/services');
-      }
-    } catch (error) {
-      console.log(error.response.error);
-    }
+  const handleLogout = ()=>{
+    logout();
   }
+
   return (
     <React.Fragment>
       <IconButton onClick={handleClickOpen}>
-        <DeleteIcon color="error"/>
+        <LogoutIcon/>
       </IconButton>
       <Dialog
         open={open}
@@ -49,17 +35,17 @@ export default function DeleteDialog({id}) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Delete Service"}
+          {"Logout"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this service?
+            Are you sure you want to logout?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={()=>handleDelete(id)} autoFocus color="error" variant="contained">
-            Delete
+          <Button onClick={handleLogout} autoFocus color="warning" variant="contained">
+            Logout
           </Button>
         </DialogActions>
       </Dialog>

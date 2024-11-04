@@ -14,6 +14,7 @@ import AboutUs from './pages/AboutUs'
 import Bookings from './pages/Dashboard/Bookings'
 import Services from './pages/Dashboard/Services'
 import ServiceDetails from './pages/Dashboard/ServiceDetail'
+import Settings from './pages/Dashboard/Settings'
 
 const App = () => {
   return (
@@ -32,6 +33,7 @@ const App = () => {
           <Route path='/dashboard/organizations/:id' element={<EditOrganization/>}></Route>
           <Route path='/dashboard/schedules' element={<Schedules/>}></Route>
           <Route path='/dashboard/calendar' element={<ScheduleCalendar/>}></Route>
+          <Route path='/dashboard/settings' element={<Settings/>}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

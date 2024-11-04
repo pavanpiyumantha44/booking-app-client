@@ -26,12 +26,14 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CorporateFareIcon from "@mui/icons-material/CorporateFare";
-import MenuBookIcon from '@mui/icons-material/MenuBook';
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Badge from "@mui/material/Badge";
 import MailIcon from "@mui/icons-material/Mail";
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutDialog from "./Dialogs/LogoutDialog";
 
 const drawerWidth = 240;
 
@@ -129,7 +131,40 @@ const InboxComponent = () => (
     This is the Inbox component content.
   </Typography>
 );
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  "& .MuiBadge-badge": {
+    backgroundColor: "#44b700",
+    color: "#44b700",
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    "&::after": {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      animation: "ripple 1.2s infinite ease-in-out",
+      border: "1px solid currentColor",
+      content: '""',
+    },
+  },
+  "@keyframes ripple": {
+    "0%": {
+      transform: "scale(.8)",
+      opacity: 1,
+    },
+    "100%": {
+      transform: "scale(2.4)",
+      opacity: 0,
+    },
+  },
+}));
 
+const SmallAvatar = styled(Avatar)(({ theme }) => ({
+  width: 22,
+  height: 22,
+  border: `2px solid ${theme.palette.background.paper}`,
+}));
 export default function Dashboard() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -146,7 +181,6 @@ export default function Dashboard() {
 
   const { user, logout } = useAuth();
   const handleLogout = () => {
-    logout();
     handleMenuClose();
   };
   const [anchorEl, setAnchorEl] = useState(null);
@@ -193,30 +227,27 @@ export default function Dashboard() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Booking App
+            {/* Kandy Garden Club */}
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <IconButton aria-label={notificationsLabel(100)}>
+          {/* <IconButton aria-label={notificationsLabel(100)}>
             <Badge badgeContent={100} color="secondary">
               <MailIcon />
             </Badge>
-          </IconButton>
-          <Avatar
+          </IconButton> */}
+          {/* <Avatar
             alt={user?.name || "User"}
-            src="/static/images/avatar/1.jpg" // Provide a default avatar image
+            src="/static/images/avatar/2.jpg" // Provide a default avatar image
             onClick={handleAvatarClick}
             sx={{ cursor: "pointer", marginLeft: 2 }} // Add marginLeft to create space
-          />
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
+          /> */}
+          <StyledBadge
+            overlap="circular"
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            variant="dot"
           >
-            <MenuItem>Profile</MenuItem>
-            <MenuItem>Settings</MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-            {/* Add more menu items as needed */}
-          </Menu>
+            <Avatar alt={user?.name||"Admin"} src="/static/images/avatar/1.jpg" />
+          </StyledBadge>
         </Toolbar>
       </AppBar>
 
@@ -291,7 +322,7 @@ export default function Dashboard() {
               </ListItemButton>
             </NavLink>
           </ListItem>
-          {["Bookings", "Services", "Schedules"].map((text, index) => (
+          {["Bookings", "Services", "Schedules","Settings"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <NavLink
                 to={`/dashboard/${text.toLowerCase()}`} // Use dynamic path based on the text
@@ -352,6 +383,11 @@ export default function Dashboard() {
                         color={menuItem === "Bookings" ? "primary" : ""}
                       />
                     )}
+                    {text === "Settings" && (
+                      <SettingsIcon
+                        color={menuItem === "Settings" ? "primary" : ""}
+                      />
+                    )}
                   </ListItemIcon>
                   <ListItemText
                     primary={text}
@@ -404,7 +440,8 @@ export default function Dashboard() {
                         },
                   ]}
                 >
-                  <LogoutIcon />
+                  {/* <LogoutIcon /> */}
+                  <LogoutDialog logout={logout} />
                 </ListItemIcon>
                 <ListItemText
                   primary="Logout"

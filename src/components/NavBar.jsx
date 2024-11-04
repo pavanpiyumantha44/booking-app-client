@@ -13,8 +13,9 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Link } from "react-router-dom";
+import LogoImg from "../assets/logo.png";
 
-const pages = ["About","Admin Login"];
+const pages = ["About", "Admin Login"];
 //const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function NavBar() {
@@ -37,11 +38,25 @@ function NavBar() {
   };
 
   return (
-    <AppBar position="static" style={{color:'black',backgroundColor:'#dfe5f0'}}>
+    <AppBar
+      position="static"
+      style={{ color: "black", backgroundColor: "white" }}
+    >
+      {/* #dfe5f0  */}
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Left Side Logo */}
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          {/* <Box style={{
+              display: { xs: "none", sm: "none", md: "block", lg: "block" },
+            }}>
+          <img
+            src={LogoImg}
+            width="80px"
+            height="100px"
+          />
+          </Box> */}
+
           <Typography
             variant="h6"
             noWrap
@@ -97,8 +112,14 @@ function NavBar() {
           </Box>
 
           {/* Mobile Logo */}
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-          <Typography
+          {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
+          {/* <img
+            src={LogoImg}
+            width="80px"
+            height="100px"
+            style={{ display: { xs: "flex", md: "none" }, mr: 1 }}
+          /> */}
+          {/* <Typography
             variant="h5"
             noWrap
             component="a"
@@ -115,7 +136,7 @@ function NavBar() {
             }}
           >
             LOGO
-          </Typography>
+          </Typography> */}
 
           {/* Pages (Products, Pricing, Blog) */}
           <Box
@@ -125,32 +146,32 @@ function NavBar() {
               justifyContent: "flex-end",
             }}
           >
-          <Link
-                to={`/about`}
-                style={{
-                  marginLeft: "16px",
-                  color: "black",
-                  fontWeight:500,
-                  display: "block",
-                  textDecoration: "none",
-                  mx: 2,
-                }}
-              >
-                ABOUT US
-              </Link>
-              <Link
-                to={`/login`}
-                style={{
-                  marginLeft: "16px",
-                  color: "black",
-                  fontWeight:500,
-                  display: "block",
-                  textDecoration: "none",
-                  mx: 2,
-                }}
-              >
-                ADMIN LOGIN
-              </Link>
+            <Link
+              to={`/about`}
+              style={{
+                marginLeft: "16px",
+                color: "black",
+                fontWeight: 500,
+                display: "block",
+                textDecoration: "none",
+                mx: 2,
+              }}
+            >
+              ABOUT US
+            </Link>
+            <Link
+              to={`/login`}
+              style={{
+                marginLeft: "16px",
+                color: "black",
+                fontWeight: 500,
+                display: "block",
+                textDecoration: "none",
+                mx: 2,
+              }}
+            >
+              ADMIN LOGIN
+            </Link>
             {/* {pages.map((page) => (
               <Link
                 to={`/${page.toLowerCase()}`}
