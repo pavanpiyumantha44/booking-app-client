@@ -238,7 +238,7 @@ const ServiceDetail = () => {
           <Grid size={12}>
             <Stack spacing={2}>
               <Grid container spacing={2}>
-                <Grid size={{ xs: 8, md: 10, lg: 10 }}>Service Types</Grid>
+                <Grid size={{ xs: 8, md: 10, lg: 10 }}><Typography variant="h6" color="primary" sx={{marginLeft:'5px'}}>Service Types</Typography></Grid>
                 <Grid
                   size={{ xs: 4, md: 2, lg: 2 }}
                   sx={{ display: "flex", justifyContent: "flex-end" }}

@@ -13,7 +13,7 @@ import DeleteDialog from "./Dialogs/DeleteDialog";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SnackBar from "../../components/SnackBar";
 import Chip from "@mui/material/Chip";
-import { getOrganizations } from "../../services/organizationService";
+import { getOrganizations, updateOrganization } from "../../services/organizationService";
 
 const breadcrumbs = [
   <NavLink
@@ -76,7 +76,6 @@ const Settings = () => {
   const [reload, setReload] = useState(false);
   const [alertOn, setAlertOn] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
-  const { id } = useParams();
   const [organization, setOrganization] = useState({});
 
   useEffect(() => {
@@ -112,18 +111,18 @@ const Settings = () => {
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-    // try {
-    //   const response = await updateService(id,organization);
-    //   if (response.success) {
-    //     setReload(!reload);
-    //     setAlertOn(true);
-    //     setSnackBarMessage("Updated Sucessfully!!");
-    //   }
-    // } catch (error) {
-    //   if (error.response && !error.response.success) {
-    //     console.log(error.response);
-    //   }
-    // }
+    try {
+      const response = await updateOrganization(organization.id,organization);
+      if (response.success) {
+        setReload(!reload);
+        setAlertOn(true);
+        setSnackBarMessage("Updated Sucessfully!!");
+      }
+    } catch (error) {
+      if (error.response && !error.response.success) {
+        console.log(error.response);
+      }
+    }
   };
   const refresh = () => {
     setReload(!reload);
@@ -166,6 +165,7 @@ const Settings = () => {
           </Grid>
         </Grid>
         <Grid size={{ xs: 12, md: 12, lg: 12 }} sx={{ marginBottom: "10px" }}>
+          <Typography variant="h5" mb={3} color="primary" sx={{marginLeft:'5px'}}>Organization Info</Typography>
           {loading ? (
             <Progress />
           ) : (
@@ -243,7 +243,7 @@ const Settings = () => {
                     <Grid size={12}>
                       <TextField
                         label="Address"
-                        name="description"
+                        name="address"
                         margin="dense"
                         fullWidth
                         multiline

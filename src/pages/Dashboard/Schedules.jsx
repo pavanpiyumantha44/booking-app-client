@@ -65,6 +65,7 @@ const Schedules = () => {
         }}
       >
         <Grid container>
+        <Typography variant="h5"color="primary" sx={{marginLeft:'5px'}}>Schedules</Typography>
           <Grid size={12}>
             <BigCalendar />
           </Grid>

@@ -98,8 +98,8 @@ export default function BigCalendar() {
           eventPropGetter={eventPropGetter} // Apply custom styles
 
           // Restrict time to show from 8:00 AM to 6:00 PM
-          min={new Date(1970, 1, 1, 8, 0, 0)} // 8:00 AM
-          max={new Date(1970, 1, 1, 18, 0, 0)} // 6:00 PM
+          min={new Date(1970, 1, 1, 6, 0, 0)} // 6:00 AM
+          max={new Date(1970, 1, 1, 21, 0, 0)} // 9:00 PM
         />
       </div>
       <AddBooking openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} handleAddEvent={handleAddEvent} startDttm={newEvent.start} endDttm={newEvent.end} newEvent={newEvent} setNewEvent={setNewEvent}/>
