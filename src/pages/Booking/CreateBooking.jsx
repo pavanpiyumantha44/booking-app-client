@@ -103,6 +103,11 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
       >
         <DialogTitle>Add New Booking</DialogTitle>
         <DialogContent>
+          <Box sx={{display:'fex',justifyContent:'space-between'}}>
+            <Box sx={{borderRadius:'100%',backgroundColor:'lightblue',padding:'10px'}}>1</Box>
+            <Box sx={{borderRadius:'100%',backgroundColor:'lightblue',padding:'10px 20px 0px 10px'}}>1</Box>
+            <Box sx={{borderRadius:'100%',backgroundColor:'lightblue',padding:'10px 20px 0px 0px'}}>1</Box>
+          </Box>
           {errorMsg && <Box sx={{ color: "tomato" }}>{errorMsg}</Box>}
           <Box>
             {step === 1 ? (
@@ -329,7 +334,7 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
                 Back
               </Button>
             </Grid2>
-            <Grid2 size={6}>
+            <Grid2 size={6} sx={{display:'flex',justifyContent:'end'}}>
               <Button
                 variant={step === 3 ? "outlined" : "contained"}
                 disabled={step === 3 ? true : false}
