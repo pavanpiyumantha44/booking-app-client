@@ -29,7 +29,6 @@ const Booking = () => {
             description: detail.description,
             isAvailable: detail.isAvailable,
           }));
-          console.log(data);
           setServiceDetails(data); // This should update your state correctly
         }
       } catch (error) {

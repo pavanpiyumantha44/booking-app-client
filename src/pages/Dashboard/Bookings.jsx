@@ -1,8 +1,9 @@
-import { Box, Breadcrumbs, Stack, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Chip, Stack, Typography } from '@mui/material';
 import Grid from "@mui/material/Grid2";
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom';
 import Progress from '../../components/Progress';
+import DataTable from '../../components/DataTable';
 
 
 
@@ -20,6 +21,60 @@ const breadcrumbs = [
     Bookings
   </Typography>,
 ];
+const columns2 = [
+  {
+    field: "Client",
+    headerName: "Client Name",
+    flex: 1,
+    editable: false,
+    renderCell: (params) => (
+      <span style={{ cursor: "pointer" }}>{params.value}</span>
+    ),
+  },
+  {
+    field: "description",
+    headerName: "Service Type",
+    flex: 1,
+    editable: false,
+  },
+  {
+    field: "StartDttm",
+    headerName: "Start Date Time",
+    flex: 1,
+    editable: false,
+  },
+  {
+    field: "Enddttm",
+    headerName: "End Date Time",
+    flex: 1,
+    editable: false,
+  },
+  {
+    field: "floodLights",
+    headerName: "Flood Lights",
+    flex: 1,
+    editable: false,
+  },
+  {
+    field: "Cost",
+    headerName: "Total Cost",
+    flex: 1,
+    editable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    editable: false,
+    renderCell: (params) =>
+      params.value ? (
+        <Chip label="Available" color="success" />
+      ) : (
+        <Chip label="Unavailable" color="error" />
+      ),
+  },
+];
+
 const Bookings = () => {
   const [reload,setReload] = useState(false);
   const [loading,setLoading] =useState(false);
@@ -47,7 +102,9 @@ const Bookings = () => {
         <Typography variant="h5" mb={3} color="primary" sx={{marginLeft:'5px'}}>Bookings</Typography>
           {
             loading ? <Progress/> :
-          <></>
+          <>
+            <DataTable rows={[]} cols={columns2}/>
+          </>
         }
         </Box>
       </Grid>

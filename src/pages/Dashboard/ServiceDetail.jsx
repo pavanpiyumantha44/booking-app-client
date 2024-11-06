@@ -17,7 +17,6 @@ import { getServiceDetails } from "../../services/serviceDetailsService";
 import Chip from "@mui/material/Chip";
 import DataTable from "../../components/DataTable";
 import AddServiceDetailsDialog from "./Dialogs/AddServiceDetailsDialog";
-import Swal from 'sweetalert2'
 
 const breadcrumbs = [
   <NavLink

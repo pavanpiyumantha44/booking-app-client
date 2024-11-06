@@ -17,18 +17,18 @@ export default function BigCalendar() {
 
   // Open dialog when user selects a slot, but only allow future dates and times between 8:00 AM and 6:00 PM
   const handleSelectSlot = useCallback(({ start, end }) => {
-    const now = new Date(); // Current date and time
-    const startHour = start.getHours();
-    const endHour = end.getHours();
+    // const now = new Date(); // Current date and time
+    // const startHour = start.getHours();
+    // const endHour = end.getHours();
 
-    if (start < now.setHours(0, 0, 0, 0)) {
-      alert('You cannot add events to past dates.');
-    } else if (startHour < 8 || endHour > 18) {
-      alert('You can only add events between 8:00 AM and 6:00 PM.');
-    } else {
-      setNewEvent({ title: '', name: '', contact: '', start, end }); // Reset form for new event
-      setOpenAddDialog(true); // Open the Add Event modal
-    }
+    // if (start < now.setHours(0, 0, 0, 0)) {
+    //   alert('You cannot add events to past dates.');
+    // } else if (startHour < 6 || endHour > 21) {
+    //   alert('You can only add events between 6:00 AM and 9:00 PM.');
+    // } else {
+    //   setNewEvent({ title: '', name: '', contact: '', start, end }); // Reset form for new event
+    //   setOpenAddDialog(true); // Open the Add Event modal
+    // }
   }, []);
 
   // Check if new event overlaps with existing events
