@@ -96,8 +96,9 @@ export default function BigCalendar() {
           selectable
           scrollToTime={scrollToTime}
           eventPropGetter={eventPropGetter} // Apply custom styles
+          views={['month', 'week', 'day']}
 
-          // Restrict time to show from 8:00 AM to 6:00 PM
+          // Restrict time to show from 6:00 AM to 9:00 PM
           min={new Date(1970, 1, 1, 6, 0, 0)} // 6:00 AM
           max={new Date(1970, 1, 1, 21, 0, 0)} // 9:00 PM
         />
