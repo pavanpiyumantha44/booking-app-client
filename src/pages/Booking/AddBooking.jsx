@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Dialog, DialogContent, DialogTitle, Grid2 } from "@mui/material";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -11,6 +11,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import dayjs from "dayjs";
+import { getAllServiceDetails } from "../../services/serviceDetailsService";
 
 const steps = ["Services","User Info", "Complete Booking"];
 const AddBooking = ({
@@ -24,6 +25,7 @@ const AddBooking = ({
 }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
+  const [serviceDetails, setServiceDetails] = useState([]);
   const [startValue, setStartValue] = React.useState(dayjs("2024-10-06T15:30"));
   const [endValue, setEndValue] = React.useState(dayjs("2024-10-06T16:00"));
 
@@ -34,6 +36,29 @@ const AddBooking = ({
   const [name,setName] = useState('');
   const [email,setEmail] = useState('');
   const [phone,setPhone] = useState('');
+
+  useEffect(() => {
+    const getServiceDetails = async () => {
+      try {
+        const response = await getAllServiceDetails(); // Make sure this function returns the expected response
+        if (response.success) {
+          const data = await response.serviceDetails.map((detail) => ({
+            id: detail._id,
+            serviceId: detail.serviceId._id,
+            service: detail.serviceId.name,
+            providedService: detail.providedService,
+            description: detail.description,
+            isAvailable: detail.isAvailable,
+          }));
+          console.log(data);
+          setServiceDetails(data); // This should update your state correctly
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getServiceDetails();
+  }, []);
 
   const totalSteps = () => {
     return steps.length;

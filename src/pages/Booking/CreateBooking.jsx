@@ -20,6 +20,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
+import { getAllServiceDetails } from "../../services/serviceDetailsService";
 
 const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
   const [step, setStep] = useState(1);
@@ -35,21 +36,34 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-
+  const [service, setService] = useState("");
+  const [serviceDetails, setServiceDetails] = useState([]);
   // const formatDateTime = (date) => {
   //   return dayjs(date).format("MMMM D, YYYY h:mm A"); // Example: October 7, 2024 3:00 PM
   // };
 
   useEffect(() => {
-    // console.log("Start:", (startDttm.toISOString()), "End:", (endDttm.toISOString()));
-    const getAllOrganizations = async()=>{
+    const getServiceDetails = async () => {
       try {
-        
+        const response = await getAllServiceDetails(); // Make sure this function returns the expected response
+        if (response.success) {
+          const data = await response.serviceDetails.map((detail) => ({
+            id: detail._id,
+            serviceId: detail.serviceId._id,
+            service: detail.serviceId.name,
+            providedService: detail.providedService,
+            description: detail.description,
+            isAvailable: detail.isAvailable,
+          }));
+          console.log(data);
+          setServiceDetails(data); // This should update your state correctly
+        }
       } catch (error) {
-        
+        console.log(error);
       }
-    }
-  });
+    };
+    getServiceDetails();
+  }, []);
 
   const increaseSteps = () => {
     if (step === 1) {
@@ -108,7 +122,7 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
                     </LocalizationProvider>
                   </Grid2>
                   <Grid2 size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DemoContainer components={["DateTimePicker"]}>
                         <DateTimePicker
                           label="End Date Time"
@@ -130,11 +144,20 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={isSlResident}
-                        onChange={(e) => setIsSlResident(e.target.value)}
+                        value={service}
+                        onChange={(e) => setService(e.target.value)}
                       >
-                        <MenuItem value={"Yes"}>Yes</MenuItem>
-                        <MenuItem value={"No"}>No</MenuItem>
+                        {serviceDetails.length > 0 ? (
+                          serviceDetails.map((val, key) => (
+                            <MenuItem value={val.id} key={key}>
+                              {val.service + " - " + val.providedService}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>No services available</MenuItem>
+                        )}
+                        {/* <MenuItem value={"Yes"}>Yes</MenuItem>
+                        <MenuItem value={"No"}>No</MenuItem> */}
                       </Select>
                     </FormControl>
                   </Grid2>
