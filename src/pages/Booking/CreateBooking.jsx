@@ -21,8 +21,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
 import { getAllServiceDetails } from "../../services/serviceDetailsService";
+import { addClient } from "../../services/clientService";
+import { addBooking } from "../../services/bookingService";
 
-const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
+const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) => {
   const [step, setStep] = useState(1);
 
   const [startDttm, setStartDttm] = useState(null);
@@ -31,13 +33,16 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
   const [isSlResident, setIsSlResident] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [isEquipmentsRequired, setIsEquipmentsRequired] = useState("");
-  const [isCoachingSessionsRequired, setIsCoachingSessionsRequired] =
-    useState("");
+  const [isCoachingSessionsRequired, setIsCoachingSessionsRequired] = useState("");
+  const [isFloodLightsRequired, setIsFloodLightsRequired] = useState("No");
+  const [totalCost, setTotalCost] = useState(0);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [service, setService] = useState("");
   const [serviceDetails, setServiceDetails] = useState([]);
+  const [clientId,setClientID] = useState("");
   // const formatDateTime = (date) => {
   //   return dayjs(date).format("MMMM D, YYYY h:mm A"); // Example: October 7, 2024 3:00 PM
   // };
@@ -45,7 +50,7 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
   useEffect(() => {
     const getServiceDetails = async () => {
       try {
-        const response = await getAllServiceDetails(); // Make sure this function returns the expected response
+        const response = await getAllServiceDetails();
         if (response.success) {
           const data = await response.serviceDetails.map((detail) => ({
             id: detail._id,
@@ -54,8 +59,10 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
             providedService: detail.providedService,
             description: detail.description,
             isAvailable: detail.isAvailable,
+            localCost: detail.localCost,
+            foreignCost: detail.foreignCost,
           }));
-          setServiceDetails(data); // This should update your state correctly
+          setServiceDetails(data);
         }
       } catch (error) {
         console.log(error);
@@ -64,6 +71,86 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
     getServiceDetails();
   }, []);
 
+  const addNewClient = async () => {
+    const client = {
+      name: name,
+      email: email,
+      phone: phone,
+      isSlResident: isSlResident,
+    };
+    try {
+      const clientResponse = await addClient(client);
+      if (clientResponse.success) {
+        setClientID(clientResponse.client._id);
+      }
+    } catch (error) {
+      console.log(error); 
+    }
+    
+  }
+  const handleCost = (service) => {
+    const filteredService = serviceDetails.filter((val) => val.id === service);
+    let serviceCost= 0;
+    let tennisEquipmentCost = 0;
+    let coachingSessionCost = 0;
+    let totalCost1 = 0;
+    if(isSlResident === "Yes"){
+       serviceCost = filteredService[0].localCost;
+    }
+    else{
+       serviceCost = filteredService[0].foreignCost;  
+    }
+    if(isEquipmentsRequired === "Yes"){
+      tennisEquipmentCost = 500;
+    }
+    if(isCoachingSessionsRequired === "Yes"){
+      coachingSessionCost = 2000;
+    }
+    totalCost1 = parseFloat(serviceCost+tennisEquipmentCost+coachingSessionCost);
+    return totalCost1;
+  }
+  const submitBooking = async() => {
+    if(isCoachingSessionsRequired === ""){
+      setIsCoachingSessionsRequired("No");
+    }
+    if(isEquipmentsRequired === ""){
+        setIsEquipmentsRequired("No");
+    }
+    const newBooking = {
+      clientId:clientId,
+      startDttm:startDttm.toString(),
+      endDttm:endDttm.toString(),
+      isCoachingSessionRequired:isCoachingSessionsRequired === "" ? "No" : isCoachingSessionsRequired,
+      isTennisEquipmentRequired:isEquipmentsRequired === "" ? "No" : isEquipmentsRequired,
+      isFloodLightsRequired:isFloodLightsRequired,
+      totalCost:handleCost(service),
+      serviceId:service,
+    }
+
+    try {
+      const bookingResponse = await addBooking(newBooking);
+      if(bookingResponse.success){
+        console.log(bookingResponse);
+        clearFields();
+        setStep(1);
+        setReload(!reload);
+        setOpenAddDialog(false);
+    }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const clearFields = () => {
+    setStartDttm(null);
+    setEndDttm(null);
+    setIsSlResident("");
+    setIsEquipmentsRequired("");
+    setIsCoachingSessionsRequired("");
+    setName("");
+    setEmail("");
+    setPhone("");
+    setService("");
+  }
   const increaseSteps = () => {
     if (step === 1) {
       if (isSlResident === "") {
@@ -85,8 +172,13 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
       if (name === "" || email === "" || phone === "") {
         setErrorMsg("Please Fill All the fields");
       } else {
+        addNewClient();
+        setTotalCost(handleCost(service));
         setStep(step + 1);
       }
+    }
+    if(step === 3){
+      submitBooking();
     }
   };
   const decreaseSteps = () => {
@@ -103,11 +195,11 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
       >
         <DialogTitle>Add New Booking</DialogTitle>
         <DialogContent>
-          <Box sx={{display:'fex',justifyContent:'space-between'}}>
+          {/* <Box sx={{display:'fex',justifyContent:'space-between'}}>
             <Box sx={{borderRadius:'100%',backgroundColor:'lightblue',padding:'10px'}}>1</Box>
             <Box sx={{borderRadius:'100%',backgroundColor:'lightblue',padding:'10px 20px 0px 10px'}}>1</Box>
             <Box sx={{borderRadius:'100%',backgroundColor:'lightblue',padding:'10px 20px 0px 0px'}}>1</Box>
-          </Box>
+          </Box> */}
           {errorMsg && <Box sx={{ color: "tomato" }}>{errorMsg}</Box>}
           <Box>
             {step === 1 ? (
@@ -154,7 +246,7 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
                         {serviceDetails.length > 0 ? (
                           serviceDetails.map((val, key) => (
                             <MenuItem value={val.id} key={key}>
-                              {val.service + " - " + val.providedService}
+                              {`${val.service} - ${val.providedService}`}
                             </MenuItem>
                           ))
                         ) : (
@@ -312,7 +404,7 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
                       <Typography variant="body1"></Typography>
                       <Typography variant="body1"></Typography>
                       <Typography variant="h3" mt={4}>
-                        Total : {2500} LKR
+                        Total : {totalCost} LKR
                       </Typography>
                     </Box>
                   </Grid2>
@@ -336,11 +428,12 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog }) => {
             </Grid2>
             <Grid2 size={6} sx={{display:'flex',justifyContent:'end'}}>
               <Button
-                variant={step === 3 ? "outlined" : "contained"}
-                disabled={step === 3 ? true : false}
+                variant={step === 3 ? "contained" : "contained"}
+                color={step === 3? "success":"primary"}
+                // disabled={step === 3 ? true : false}
                 onClick={increaseSteps}
               >
-                Next
+                {step===3?"Confirm Booking" : "Next"}
               </Button>
             </Grid2>
           </Grid2>

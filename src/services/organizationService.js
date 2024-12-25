@@ -21,11 +21,7 @@ const getOrganization = async(id)=>{
 
 const getOrganizations = async()=>{
     try {
-        const response = await axios.get(`${BASE_URL}/api/organization`,{
-            headers:{
-              "Authorization": `Bearer ${localStorage.getItem('token')}`
-            }
-          });
+        const response = await axios.get(`${BASE_URL}/api/organization`);
         return response.data;
     } catch (error) {
         console.log(error);

@@ -10,16 +10,20 @@ import FormControl from "@mui/material/FormControl";
 import { getAllServices } from "../../services/provideService";
 import { getAllServiceDetails } from "../../services/serviceDetailsService";
 import CreateBooking from "./CreateBooking";
+import { getAllBookings } from "../../services/bookingService";
+import dayjs from "dayjs";
 
 const Booking = () => {
   const [serviceDetails, setServiceDetails] = useState([]);
   const [selectedServiceDetails, setSelectedServiceDetails] = useState("");
   const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [bookings, setBookings] = useState([]);
+  const [reload,setReload] = useState(false);
 
   useEffect(() => {
     const getServiceDetails = async () => {
       try {
-        const response = await getAllServiceDetails(); // Make sure this function returns the expected response
+        const response = await getAllServiceDetails();
         if (response.success) {
           const data = await response.serviceDetails.map((detail) => ({
             id: detail._id,
@@ -29,14 +33,55 @@ const Booking = () => {
             description: detail.description,
             isAvailable: detail.isAvailable,
           }));
-          setServiceDetails(data); // This should update your state correctly
+          setServiceDetails(data);
         }
       } catch (error) {
         console.log(error);
       }
     };
+    const getBookings = async () => {
+      try {
+        const bookingsResponse = await getAllBookings();
+        if (bookingsResponse.success) {
+          // const data = await bookingsResponse.bookings.map((booking) => ({
+          //   id: booking._id,
+          //   startDttm: booking.startDttm,
+          //   endDttm: booking.endDttm,
+          //   clientName : booking.clientId.name,
+          //   clientEmail : booking.clientId.email,
+          //   clientPhone : booking.clientId.phone,
+          //   service: booking.booking.serviceId.providedService,
+          // }));
+          const data = await bookingsResponse.bookings.map((booking) => ({
+            id: booking._id,
+            start: dayjs(booking.startDttm).toDate(),
+            end: dayjs(booking.endDttm).toDate(),
+            title: booking.serviceId.providedService,
+            clientName : booking.clientId.name,
+            clientEmail : booking.clientId.email,
+            clientPhone : booking.clientId.phone,
+            color: getRandomColor(),
+          }));
+          setBookings(data);
+          console.log(data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
     getServiceDetails();
-  }, []);
+    getBookings();
+  }, [reload]);
+
+  const getRandomColor = () => {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+  
   return (
     <>
       <NavBar />
@@ -114,8 +159,8 @@ const Booking = () => {
             marginRight:'auto',
           }}
         >
-          <CreateBooking openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog}/>
-          <BigCalendar />
+          <CreateBooking openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} reload={reload} setReload={setReload}/>
+          <BigCalendar bookingList={bookings}/>
         </Box>
       </Box>
       <Footer />

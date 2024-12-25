@@ -1,10 +1,13 @@
 import { Box, Breadcrumbs, Chip, Stack, Typography } from '@mui/material';
 import Grid from "@mui/material/Grid2";
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom';
 import Progress from '../../components/Progress';
 import DataTable from '../../components/DataTable';
-
+import { getAllBookings } from '../../services/bookingService';
+import ClearIcon from '@mui/icons-material/Clear';
+import DoneIcon from '@mui/icons-material/Done';
+import dayjs from 'dayjs';
 
 
 const breadcrumbs = [
@@ -21,9 +24,10 @@ const breadcrumbs = [
     Bookings
   </Typography>,
 ];
+const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 const columns2 = [
   {
-    field: "Client",
+    field: "client",
     headerName: "Client Name",
     flex: 1,
     editable: false,
@@ -44,19 +48,49 @@ const columns2 = [
     editable: false,
   },
   {
-    field: "Enddttm",
+    field: "EndDttm",
     headerName: "End Date Time",
     flex: 1,
     editable: false,
+  },
+  {
+    field: "isCoachingSessionRequired",
+    headerName: "Coaching Session",
+    flex: 1,
+    editable: false,
+    renderCell: (params) =>
+      params.value === "No"? (
+        <ClearIcon color='error'/>
+      ) : (
+        <DoneIcon color='success'/>
+      ),
+  },
+  {
+    field: "isEquipmentRequired",
+    headerName: "Tennis Equipment",
+    flex: 1,
+    editable: false,
+    renderCell: (params) =>
+      params.value === "No"? (
+        <ClearIcon color='error'/>
+      ) : (
+        <DoneIcon color='success'/>
+      ),
   },
   {
     field: "floodLights",
     headerName: "Flood Lights",
     flex: 1,
     editable: false,
+    renderCell: (params) =>
+      params.value === "No" ? (
+        <ClearIcon color='error'/>
+      ) : (
+        <DoneIcon color='success'/>
+      ),
   },
   {
-    field: "Cost",
+    field: "cost",
     headerName: "Total Cost",
     flex: 1,
     editable: false,
@@ -70,7 +104,7 @@ const columns2 = [
       params.value ? (
         <Chip label="Available" color="success" />
       ) : (
-        <Chip label="Unavailable" color="error" />
+        <Chip label="Booked" color="error" />
       ),
   },
 ];
@@ -78,6 +112,33 @@ const columns2 = [
 const Bookings = () => {
   const [reload,setReload] = useState(false);
   const [loading,setLoading] =useState(false);
+  const [bookings, setBookings] = useState([]);
+  useEffect(() => {
+    const getBookings = async () => {
+      try {
+        const bookingsResponse = await getAllBookings();
+        if (bookingsResponse.success) {
+          const data = await bookingsResponse.bookings.map((booking) => ({
+            id: booking._id,
+            StartDttm: dayjs(booking.startDttm).format('YYYY-MM-DD HH:mm A'),
+            EndDttm: dayjs(booking.endDttm).format('YYYY-MM-DD HH:mm A'),
+            client : booking.clientId.name,
+            //clientEmail : booking.clientId.email,
+            //clientPhone : booking.clientId.phone,
+            description: booking.serviceId.providedService,
+            floodLights: booking.isFloodLightsRequired,
+            isCoachingSessionRequired: booking.isCoachingSessionRequired,
+            isEquipmentRequired: booking.isTennisEquipmentRequired,
+            cost: booking.totalCost+" LKR",
+          }));
+          setBookings(data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getBookings();
+  },[reload]);
   return (
     <>
     <Box sx={{ flexGrow: 1 }}>
@@ -103,7 +164,7 @@ const Bookings = () => {
           {
             loading ? <Progress/> :
           <>
-            <DataTable rows={[]} cols={columns2}/>
+            <DataTable rows={bookings} cols={columns2}/>
           </>
         }
         </Box>

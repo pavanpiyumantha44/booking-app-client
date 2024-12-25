@@ -1,12 +1,13 @@
-import React, { Fragment, useState, useCallback, useMemo } from 'react';
+import React, { Fragment, useState, useCallback, useMemo, useEffect } from 'react';
 import { Calendar, Views } from 'react-big-calendar';
 import { dayjsLocalizer } from 'react-big-calendar';
 import dayjs from 'dayjs';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } from '@mui/material';
 import AddBooking from '../pages/Booking/AddBooking';
+import { getAllBookings } from '../services/bookingService';
 
-export default function BigCalendar() {
+export default function BigCalendar({bookingList}) {
   const [myEvents, setEvents] = useState([]);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
@@ -14,7 +15,6 @@ export default function BigCalendar() {
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   const localizer = dayjsLocalizer(dayjs);
-
   // Open dialog when user selects a slot, but only allow future dates and times between 8:00 AM and 6:00 PM
   const handleSelectSlot = useCallback(({ start, end }) => {
     // const now = new Date(); // Current date and time
@@ -39,14 +39,14 @@ export default function BigCalendar() {
   };
 
   // Save event and close modal
-  const handleAddEvent = () => {
-    if (isOverlap(newEvent)) {
-      alert('This time slot is already taken. Please choose a different time.');
-    } else {
-      setEvents((prev) => [...prev, { ...newEvent, color: getRandomColor() }]); // Assign random color
-      setOpenAddDialog(false);
-    }
-  };
+  // const handleAddEvent = () => {
+  //   if (isOverlap(newEvent)) {
+  //     alert('This time slot is already taken. Please choose a different time.');
+  //   } else {
+  //     setEvents((prev) => [...prev, { ...newEvent, color: getRandomColor() }]); // Assign random color
+  //     setOpenAddDialog(false);
+  //   }
+  // };
 
   // Show event details in a dialog
   const handleSelectEvent = useCallback((event) => {
@@ -61,16 +61,6 @@ export default function BigCalendar() {
     }),
     []
   );
-
-  // Function to generate a random color
-  const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  };
 
   // Custom function to style each event
   const eventPropGetter = (event) => {
@@ -89,7 +79,7 @@ export default function BigCalendar() {
         <Calendar
           defaultDate={defaultDate}
           defaultView={Views.WEEK}
-          events={myEvents}
+          events={bookingList}
           localizer={localizer}
           onSelectEvent={handleSelectEvent}
           onSelectSlot={handleSelectSlot}
@@ -103,7 +93,7 @@ export default function BigCalendar() {
           max={new Date(1970, 1, 1, 21, 0, 0)} // 9:00 PM
         />
       </div>
-      <AddBooking openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} handleAddEvent={handleAddEvent} startDttm={newEvent.start} endDttm={newEvent.end} newEvent={newEvent} setNewEvent={setNewEvent}/>
+      {/* <AddBooking openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} handleAddEvent={handleAddEvent} startDttm={newEvent.start} endDttm={newEvent.end} newEvent={newEvent} setNewEvent={setNewEvent}/> */}
       {/* Dialog for showing event details */}
       <Dialog open={openDetailsDialog} onClose={() => setOpenDetailsDialog(false)}>
         <DialogTitle>Event Details</DialogTitle>
@@ -120,21 +110,21 @@ export default function BigCalendar() {
               <TextField
                 label="Name"
                 fullWidth
-                value={selectedEvent.name}
+                value={selectedEvent.clientName}
                 readonly
                 margin="dense"
               />
               <TextField
                 label="Email"
                 fullWidth
-                value={selectedEvent.email}
+                value={selectedEvent.clientEmail}
                 readonly
                 margin="dense"
               />
               <TextField
                 label="Contact Number"
                 fullWidth
-                value={selectedEvent.phone}
+                value={selectedEvent.clientPhone}
                 readonly
                 margin="dense"
               />
