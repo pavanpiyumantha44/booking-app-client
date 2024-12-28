@@ -7,7 +7,7 @@ const validateBooking = (startDttm, endDttm) => {
     // Check if both dates are in the future
     const now = dayjs();
     if (startDateTime.isBefore(now) || endDateTime.isBefore(now)) {
-      return { isValid: false, message: "You cannot add events to past dates." };
+      return { isValid: false, message: "You cannot add events to past dates or time." };
     }
   
     // Check if both times are within allowed hours (8:00 AM - 6:00 PM)

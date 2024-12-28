@@ -190,11 +190,11 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
       if (isSlResident === "" || service === "" || startDttm === null || endDttm === null) {
         setErrorMsg("Please Fill All the fields");
       }
-      else if(!validateOverlapBookings(startDttm,endDttm,availableBookings,service).isValid){
-        setErrorMsg(validateOverlapBookings(startDttm,endDttm,availableBookings,service).message);
-      }
       else if(!validateBooking(startDttm,endDttm).isValid){
         setErrorMsg(validateBooking(startDttm,endDttm).message);
+      }
+      else if(!validateOverlapBookings(startDttm,endDttm,availableBookings,service).isValid){
+        setErrorMsg(validateOverlapBookings(startDttm,endDttm,availableBookings,service).message);
       } 
       else {
         if (
