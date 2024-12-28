@@ -63,7 +63,6 @@ const Booking = () => {
             color: getRandomColor(),
           }));
           setBookings(data);
-          console.log(data);
         }
       } catch (error) {
         console.log(error);

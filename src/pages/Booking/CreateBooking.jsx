@@ -22,7 +22,8 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
 import { getAllServiceDetails } from "../../services/serviceDetailsService";
 import { addClient } from "../../services/clientService";
-import { addBooking } from "../../services/bookingService";
+import { addBooking, getAllBookings } from "../../services/bookingService";
+import { validateBooking, validateOverlapBookings } from "../../validations/validation";
 
 const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) => {
   const [step, setStep] = useState(1);
@@ -47,6 +48,8 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
   //   return dayjs(date).format("MMMM D, YYYY h:mm A"); // Example: October 7, 2024 3:00 PM
   // };
 
+  const [availableBookings, setAvailableBookings] = useState([]);
+
   useEffect(() => {
     const getServiceDetails = async () => {
       try {
@@ -68,6 +71,32 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
         console.log(error);
       }
     };
+    const getBookings = async () => {
+      try {
+        const bookingsResponse = await getAllBookings();
+        if (bookingsResponse.success) {
+          const data = await bookingsResponse.bookings.map((booking) => ({
+            id: booking._id,
+            start: dayjs(booking.startDttm).toDate(),
+            end: dayjs(booking.endDttm).toDate(),
+            client : booking.clientId.name,
+            //clientEmail : booking.clientId.email,
+            //clientPhone : booking.clientId.phone,
+            description: booking.serviceId.providedService,
+            floodLights: booking.isFloodLightsRequired,
+            isCoachingSessionRequired: booking.isCoachingSessionRequired,
+            isEquipmentRequired: booking.isTennisEquipmentRequired,
+            cost: booking.totalCost+" LKR",
+            serviceId: booking.serviceId._id,
+          }));
+          setAvailableBookings(data);
+          //console.log(data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getBookings();
     getServiceDetails();
   }, []);
 
@@ -88,6 +117,7 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
     }
     
   }
+
   const handleCost = (service) => {
     const filteredService = serviceDetails.filter((val) => val.id === service);
     let serviceCost= 0;
@@ -109,6 +139,7 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
     totalCost1 = parseFloat(serviceCost+tennisEquipmentCost+coachingSessionCost);
     return totalCost1;
   }
+
   const submitBooking = async() => {
     if(isCoachingSessionsRequired === ""){
       setIsCoachingSessionsRequired("No");
@@ -140,6 +171,7 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
       console.log(error);
     }
   }
+  
   const clearFields = () => {
     setStartDttm(null);
     setEndDttm(null);
@@ -151,16 +183,25 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
     setPhone("");
     setService("");
   }
+
   const increaseSteps = () => {
-    if (step === 1) {
-      if (isSlResident === "") {
-        setErrorMsg("Please Fill All the fileds");
-      } else {
+    if (step === 1) 
+    {
+      if (isSlResident === "" || service === "" || startDttm === null || endDttm === null) {
+        setErrorMsg("Please Fill All the fields");
+      }
+      else if(!validateOverlapBookings(startDttm,endDttm,availableBookings,service).isValid){
+        setErrorMsg(validateOverlapBookings(startDttm,endDttm,availableBookings,service).message);
+      }
+      else if(!validateBooking(startDttm,endDttm).isValid){
+        setErrorMsg(validateBooking(startDttm,endDttm).message);
+      } 
+      else {
         if (
           isSlResident === "No" &&
           (isEquipmentsRequired === "" || isCoachingSessionsRequired === "")
         ) {
-          setErrorMsg("Please Fill All the fileds");
+          setErrorMsg("Please Fill All the fields");
         } else {
           setErrorMsg("");
           setStep(step + 1);
@@ -185,6 +226,7 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
     setErrorMsg("");
     setStep(step - 1);
   };
+
   return (
     <>
       <Dialog
@@ -200,7 +242,7 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
             <Box sx={{borderRadius:'100%',backgroundColor:'lightblue',padding:'10px 20px 0px 10px'}}>1</Box>
             <Box sx={{borderRadius:'100%',backgroundColor:'lightblue',padding:'10px 20px 0px 0px'}}>1</Box>
           </Box> */}
-          {errorMsg && <Box sx={{ color: "tomato" }}>{errorMsg}</Box>}
+          {errorMsg && <Box sx={{ color: "white", backgroundColor:"tomato", padding:"10px",marginBottom:'20px',borderRadius:'5px' }}>{errorMsg}</Box>}
           <Box>
             {step === 1 ? (
               <>
@@ -252,8 +294,6 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
                         ) : (
                           <MenuItem disabled>No services available</MenuItem>
                         )}
-                        {/* <MenuItem value={"Yes"}>Yes</MenuItem>
-                        <MenuItem value={"No"}>No</MenuItem> */}
                       </Select>
                     </FormControl>
                   </Grid2>
