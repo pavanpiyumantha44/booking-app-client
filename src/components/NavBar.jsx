@@ -13,7 +13,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Link } from "react-router-dom";
-import LogoImg from "../assets/logo.png";
+import LogoImg from "../assets/logo2.png";
 
 const pages = ["About", "Admin Login"];
 //const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -46,8 +46,8 @@ function NavBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Left Side Logo */}
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          {/* <Box style={{
+          {/* <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
+          <Box style={{
               display: { xs: "none", sm: "none", md: "block", lg: "block" },
             }}>
           <img
@@ -55,7 +55,7 @@ function NavBar() {
             width="80px"
             height="100px"
           />
-          </Box> */}
+          </Box>
 
           <Typography
             variant="h6"
@@ -72,7 +72,7 @@ function NavBar() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            Kandy Garden Club
           </Typography>
 
           {/* Mobile Menu Icon */}
