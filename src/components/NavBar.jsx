@@ -7,11 +7,6 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import { Link } from "react-router-dom";
 import LogoImg from "../assets/logo2.png";
 
@@ -50,11 +45,13 @@ function NavBar() {
           <Box style={{
               display: { xs: "none", sm: "none", md: "block", lg: "block" },
             }}>
+          <Link to={"/"}>
           <img
             src={LogoImg}
             width="80px"
             height="100px"
           />
+          </Link>
           </Box>
 
           <Typography
@@ -76,7 +73,7 @@ function NavBar() {
           </Typography>
 
           {/* Mobile Menu Icon */}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none"},justifyContent:'end'}}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -103,40 +100,36 @@ function NavBar() {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: "block", md: "none" } }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              <Box>
+              <Link
+              to={`/about`}
+              style={{
+                margin: "16px",
+                color: "black",
+                fontWeight: 500,
+                display: "block",
+                textDecoration: "none",
+                mx: 2,
+              }}
+            >
+              <Typography textAlign="center">ABOUT US</Typography>
+            </Link>
+            <Link
+              to={`/login`}
+              style={{
+                margin: "16px",
+                color: "black",
+                fontWeight: 500,
+                display: "block",
+                textDecoration: "none",
+                mx: 2,
+              }}
+            >
+              <Typography textAlign="center">ADMIN LOGIN</Typography>
+            </Link>
+              </Box>
             </Menu>
           </Box>
-
-          {/* Mobile Logo */}
-          {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
-          {/* <img
-            src={LogoImg}
-            width="80px"
-            height="100px"
-            style={{ display: { xs: "flex", md: "none" }, mr: 1 }}
-          /> */}
-          {/* <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#"
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            LOGO
-          </Typography> */}
 
           {/* Pages (Products, Pricing, Blog) */}
           <Box
@@ -172,21 +165,6 @@ function NavBar() {
             >
               ADMIN LOGIN
             </Link>
-            {/* {pages.map((page) => (
-              <Link
-                to={`/${page.toLowerCase()}`}
-                style={{
-                  marginLeft: "16px",
-                  color: "black",
-                  fontWeight:500,
-                  display: "block",
-                  textDecoration: "none",
-                  mx: 2,
-                }}
-              >
-                {page.toUpperCase()}
-              </Link>
-            ))} */}
           </Box>
         </Toolbar>
       </Container>
