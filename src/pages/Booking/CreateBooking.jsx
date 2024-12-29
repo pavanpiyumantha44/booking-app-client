@@ -124,11 +124,16 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
     let tennisEquipmentCost = 0;
     let coachingSessionCost = 0;
     let totalCost1 = 0;
+
+    const startDateTime = dayjs(startDttm);
+    const endDateTime = dayjs(endDttm);
+    const durationMinutes = Number(endDateTime.diff(startDateTime, 'minute'))/30;
+    console.log(durationMinutes);
     if(isSlResident === "Yes"){
-       serviceCost = filteredService[0].localCost;
+       serviceCost = filteredService[0].localCost*durationMinutes;
     }
     else{
-       serviceCost = filteredService[0].foreignCost;  
+       serviceCost = filteredService[0].foreignCost*durationMinutes;  
     }
     if(isEquipmentsRequired === "Yes"){
       tennisEquipmentCost = 500;

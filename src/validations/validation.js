@@ -10,11 +10,11 @@ const validateBooking = (startDttm, endDttm) => {
       return { isValid: false, message: "You cannot add events to past dates or time." };
     }
   
-    // Check if both times are within allowed hours (8:00 AM - 6:00 PM)
+    // Check if both times are within allowed hours (6:00 AM - 9:00 PM)
     const startHour = startDateTime.hour();
     const endHour = endDateTime.hour();
-    if (startHour < 6 || endHour >= 22) {
-      return { isValid: false, message: "Bookings must be between 6:00 AM and 10:00 PM." };
+    if (startHour < 6 || endHour >= 21) {
+      return { isValid: false, message: "Bookings must be between 6:00 AM and 9:00 PM." };
     }
     
      // Check if the start and end times are on the same day
