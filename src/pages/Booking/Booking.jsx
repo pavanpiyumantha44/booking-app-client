@@ -94,7 +94,7 @@ const Booking = () => {
       >
         <Box
           sx={{
-            width: "60%",
+            width: {sx:"80%",sm:"80%",md:"60%",lg:"60%"},
             display: "flex",
             justifyContent: "start",
             alignItems: "center",
@@ -108,7 +108,7 @@ const Booking = () => {
         </Box>
         <Box sx={{ width: "80%", marginLeft: "auto", marginRight: "auto" }}>
           <Grid2 container spacing={2} mt={3}>
-            <Grid2 size={8}>
+            <Grid2 size={{xs:10,sm:10,md:8,lg:8}}>
               <FormControl fullWidth sx={{ mt: "10px" }}>
                 <InputLabel
                   id="demo-simple-select-label"
@@ -135,18 +135,24 @@ const Booking = () => {
               </FormControl>
             </Grid2>
             <Grid2
-              size={4}
+              size={2}
               sx={{ height: "50px", display: "flex", alignItems: "center" }}
               my={2}
             >
               <Button variant="contained" color="primary">
                 Filter
               </Button>
-              <Button variant="contained" color="primary" sx={{marginLeft:'10px'}} onClick={()=>setOpenAddDialog(true)}>
-                Add booking
-              </Button>
             </Grid2>
-          </Grid2>
+              <Grid2
+                size={{xs:10,sm:10,md:2,lg:2}}
+                sx={{ height: "50px", display: "flex", alignItems: "center", justifyContent:"center" }}
+                my={2}
+              >
+                <Button variant="contained" color="primary" sx={{marginLeft:'40px'}} onClick={()=>setOpenAddDialog(true)}>
+                  Add booking
+                </Button>
+              </Grid2>
+            </Grid2>
         </Box>
         <Box
           sx={{

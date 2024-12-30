@@ -23,9 +23,17 @@ import dayjs from "dayjs";
 import { getAllServiceDetails } from "../../services/serviceDetailsService";
 import { addClient } from "../../services/clientService";
 import { addBooking, getAllBookings } from "../../services/bookingService";
-import { validateBooking, validateOverlapBookings } from "../../validations/validation";
+import {
+  validateBooking,
+  validateOverlapBookings,
+} from "../../validations/validation";
 
-const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) => {
+const CreateBooking = ({
+  openAddDialog,
+  setOpenAddDialog,
+  reload,
+  setReload,
+}) => {
   const [step, setStep] = useState(1);
 
   const [startDttm, setStartDttm] = useState(null);
@@ -34,16 +42,21 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
   const [isSlResident, setIsSlResident] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [isEquipmentsRequired, setIsEquipmentsRequired] = useState("");
-  const [isCoachingSessionsRequired, setIsCoachingSessionsRequired] = useState("");
+  const [isCoachingSessionsRequired, setIsCoachingSessionsRequired] =
+    useState("");
   const [isFloodLightsRequired, setIsFloodLightsRequired] = useState("No");
+  const [selectedServiceCost, setSelectedServiceCost] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
+  const [timeDuration, setTimeDuration] = useState("");
+  const [floodlightCost, setFloodlightCost] = useState(0);
+  const [serviceDescription, setServiceDescription] = useState("");
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [service, setService] = useState("");
   const [serviceDetails, setServiceDetails] = useState([]);
-  const [clientId,setClientID] = useState("");
+  const [clientId, setClientID] = useState("");
   // const formatDateTime = (date) => {
   //   return dayjs(date).format("MMMM D, YYYY h:mm A"); // Example: October 7, 2024 3:00 PM
   // };
@@ -79,14 +92,14 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
             id: booking._id,
             start: dayjs(booking.startDttm).toDate(),
             end: dayjs(booking.endDttm).toDate(),
-            client : booking.clientId.name,
+            client: booking.clientId.name,
             //clientEmail : booking.clientId.email,
             //clientPhone : booking.clientId.phone,
             description: booking.serviceId.providedService,
             floodLights: booking.isFloodLightsRequired,
             isCoachingSessionRequired: booking.isCoachingSessionRequired,
             isEquipmentRequired: booking.isTennisEquipmentRequired,
-            cost: booking.totalCost+" LKR",
+            cost: booking.totalCost + " LKR",
             serviceId: booking.serviceId._id,
           }));
           setAvailableBookings(data);
@@ -95,7 +108,7 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     getBookings();
     getServiceDetails();
   }, []);
@@ -111,72 +124,123 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
       const clientResponse = await addClient(client);
       if (clientResponse.success) {
         setClientID(clientResponse.client._id);
+        return true;
       }
     } catch (error) {
-      console.log(error); 
+      console.log(error);
+      return false;
     }
-    
-  }
+  };
 
   const handleCost = (service) => {
     const filteredService = serviceDetails.filter((val) => val.id === service);
-    let serviceCost= 0;
+    let serviceCost = 0;
     let tennisEquipmentCost = 0;
     let coachingSessionCost = 0;
     let totalCost1 = 0;
 
     const startDateTime = dayjs(startDttm);
     const endDateTime = dayjs(endDttm);
-    const durationMinutes = Number(endDateTime.diff(startDateTime, 'minute'))/30;
-    console.log(durationMinutes);
-    if(isSlResident === "Yes"){
-       serviceCost = filteredService[0].localCost*durationMinutes;
+    const totalDurationHours = Number(
+      endDateTime.diff(startDateTime, "minute") / 60
+    );
+
+    serviceCost =
+      isSlResident === "Yes"
+        ? filteredService[0].localCost
+        : filteredService[0].foreignCost;
+    //console.log("Service Cost : "+serviceCost);
+    //console.log("Total Duration Hours : "+totalDurationHours);
+    const fullHours = Math.floor(totalDurationHours);
+    const remainingMinutes = Number((totalDurationHours - fullHours) * 60);
+
+    //console.log("Full Hours : "+fullHours);
+    //console.log("Remain Minutes : "+remainingMinutes);
+    const costForFullHours = fullHours * serviceCost;
+    const costForRemainingMinutes = Number(parseFloat(
+      (serviceCost / 60) * remainingMinutes).toFixed(2)
+    );
+    const totalCostForHourlyRate = Number(parseFloat(
+      costForFullHours + costForRemainingMinutes).toFixed(2)
+    );
+
+    if(fullHours !==0 && remainingMinutes !==0){
+      setTimeDuration(`${fullHours} hour(s) ${remainingMinutes} minutes`);
+    }else if(fullHours !==0 && remainingMinutes ===0){
+      setTimeDuration(`${fullHours} hour(s)`);
     }
     else{
-       serviceCost = filteredService[0].foreignCost*durationMinutes;  
+      setTimeDuration(`${remainingMinutes} minutes`);
     }
-    if(isEquipmentsRequired === "Yes"){
+
+    setServiceDescription(filteredService[0].providedService);
+    setSelectedServiceCost(totalCostForHourlyRate);
+    //console.log("Total Cost For Hourly Rate : "+totalCostForHourlyRate);
+
+    if (isEquipmentsRequired === "Yes") {
       tennisEquipmentCost = 500;
     }
-    if(isCoachingSessionsRequired === "Yes"){
+    if (isCoachingSessionsRequired === "Yes") {
       coachingSessionCost = 2000;
     }
-    totalCost1 = parseFloat(serviceCost+tennisEquipmentCost+coachingSessionCost);
+    
+    const floodlightStart = dayjs(startDttm).set('hour', 18).set('minute', 0); // 6:00 PM
+    const floodlightEnd = dayjs(endDttm);
+    
+    let floodlightHours = 0;
+    if (endDateTime.isAfter(floodlightStart)) {
+      setIsFloodLightsRequired("Yes");
+      const floodlightStartEffective = dayjs.max(floodlightStart, startDateTime);
+      floodlightHours = floodlightEnd.diff(floodlightStartEffective, 'minute') / 60;
+    }
+
+    const floodlightCost = Number(parseFloat(Math.ceil(floodlightHours) * 1000).toFixed(2)); // Round up to the next hour
+    setFloodlightCost(floodlightCost);
+    //console.log("Floodlight Cost : "+floodlightCost);
+    totalCost1 = parseFloat(
+      totalCostForHourlyRate + tennisEquipmentCost + coachingSessionCost+floodlightCost
+    ).toFixed(2);
+    //console.log("Total Cost : "+totalCost1);
     return totalCost1;
-  }
+  };
 
-  const submitBooking = async() => {
-    if(isCoachingSessionsRequired === ""){
-      setIsCoachingSessionsRequired("No");
-    }
-    if(isEquipmentsRequired === ""){
+  const submitBooking = async () => {
+    const isClientSaved = addNewClient();
+    if (isClientSaved) {
+      if (isCoachingSessionsRequired === "") {
+        setIsCoachingSessionsRequired("No");
+      }
+      if (isEquipmentsRequired === "") {
         setIsEquipmentsRequired("No");
-    }
-    const newBooking = {
-      clientId:clientId,
-      startDttm:startDttm.toString(),
-      endDttm:endDttm.toString(),
-      isCoachingSessionRequired:isCoachingSessionsRequired === "" ? "No" : isCoachingSessionsRequired,
-      isTennisEquipmentRequired:isEquipmentsRequired === "" ? "No" : isEquipmentsRequired,
-      isFloodLightsRequired:isFloodLightsRequired,
-      totalCost:handleCost(service),
-      serviceId:service,
-    }
+      }
+      const newBooking = {
+        clientId: clientId,
+        startDttm: startDttm.toString(),
+        endDttm: endDttm.toString(),
+        isCoachingSessionRequired:
+          isCoachingSessionsRequired === "" ? "No" : isCoachingSessionsRequired,
+        isTennisEquipmentRequired:
+          isEquipmentsRequired === "" ? "No" : isEquipmentsRequired,
+        isFloodLightsRequired: isFloodLightsRequired,
+        totalCost: handleCost(service),
+        serviceId: service,
+      };
 
-    try {
-      const bookingResponse = await addBooking(newBooking);
-      if(bookingResponse.success){
-        console.log(bookingResponse);
-        clearFields();
-        setStep(1);
-        setReload(!reload);
-        setOpenAddDialog(false);
+      try {
+        const bookingResponse = await addBooking(newBooking);
+        if (bookingResponse.success) {
+          console.log(bookingResponse);
+          clearFields();
+          setStep(1);
+          setReload(!reload);
+          setOpenAddDialog(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  
+  };
+
   const clearFields = () => {
     setStartDttm(null);
     setEndDttm(null);
@@ -187,21 +251,32 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
     setEmail("");
     setPhone("");
     setService("");
-  }
+  };
 
   const increaseSteps = () => {
-    if (step === 1) 
-    {
-      if (isSlResident === "" || service === "" || startDttm === null || endDttm === null) {
+    if (step === 1) {
+      if (
+        isSlResident === "" ||
+        service === "" ||
+        startDttm === null ||
+        endDttm === null
+      ) {
         setErrorMsg("Please Fill All the fields");
-      }
-      else if(!validateBooking(startDttm,endDttm).isValid){
-        setErrorMsg(validateBooking(startDttm,endDttm).message);
-      }
-      else if(!validateOverlapBookings(startDttm,endDttm,availableBookings,service).isValid){
-        setErrorMsg(validateOverlapBookings(startDttm,endDttm,availableBookings,service).message);
-      } 
-      else {
+      } else if (!validateBooking(startDttm, endDttm).isValid) {
+        setErrorMsg(validateBooking(startDttm, endDttm).message);
+      } else if (
+        !validateOverlapBookings(startDttm, endDttm, availableBookings, service)
+          .isValid
+      ) {
+        setErrorMsg(
+          validateOverlapBookings(
+            startDttm,
+            endDttm,
+            availableBookings,
+            service
+          ).message
+        );
+      } else {
         if (
           isSlResident === "No" &&
           (isEquipmentsRequired === "" || isCoachingSessionsRequired === "")
@@ -218,13 +293,12 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
       if (name === "" || email === "" || phone === "") {
         setErrorMsg("Please Fill All the fields");
       } else {
-        addNewClient();
         setTotalCost(handleCost(service));
         setStep(step + 1);
       }
     }
-    if(step === 3){
-      submitBooking();
+    if (step === 3) {
+      //submitBooking();
     }
   };
   const decreaseSteps = () => {
@@ -240,14 +314,31 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
         maxWidth="md"
         fullWidth
       >
-        <DialogTitle>Add New Booking</DialogTitle>
+        <DialogTitle>
+          <Typography color="primary" variant="h6">
+            {step===1?"New Booking":""}
+            {step===2?"Contact Details":""}
+            {step===3?"Confirm Booking":""}
+          </Typography></DialogTitle>
         <DialogContent>
           {/* <Box sx={{display:'fex',justifyContent:'space-between'}}>
             <Box sx={{borderRadius:'100%',backgroundColor:'lightblue',padding:'10px'}}>1</Box>
             <Box sx={{borderRadius:'100%',backgroundColor:'lightblue',padding:'10px 20px 0px 10px'}}>1</Box>
             <Box sx={{borderRadius:'100%',backgroundColor:'lightblue',padding:'10px 20px 0px 0px'}}>1</Box>
           </Box> */}
-          {errorMsg && <Box sx={{ color: "white", backgroundColor:"tomato", padding:"10px",marginBottom:'20px',borderRadius:'5px' }}>{errorMsg}</Box>}
+          {errorMsg && (
+            <Box
+              sx={{
+                color: "white",
+                backgroundColor: "tomato",
+                padding: "10px",
+                marginBottom: "20px",
+                borderRadius: "5px",
+              }}
+            >
+              {errorMsg}
+            </Box>
+          )}
           <Box>
             {step === 1 ? (
               <>
@@ -419,39 +510,359 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
                     size={{ xs: 12, sm: 12, md: 6, lg: 6 }}
                     sx={{ display: "flex", flexDirection: "column" }}
                   >
-                    <Typography>
-                      StartDttm:{" "}
-                      {dayjs(startDttm).format("MMMM D, YYYY h:mm A")}
+                    <Typography color="primary" sx={{ fontWeight: "600" }}>
+                      Service Details
                     </Typography>
-                    <Typography>
-                      EndDttm: {dayjs(endDttm).format("MMMM D, YYYY h:mm A")}
-                    </Typography>
-                    <Typography>SL Resident: {isSlResident}</Typography>
-                    <Typography>Name: {name}</Typography>
-                    <Typography>Email: {email}</Typography>
-                    <Typography>Phone: {phone}</Typography>
+                    <Divider sx={{ mb: "5px" }} />
+                    <Grid2
+                      container
+                      size={12}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography>Start Date Time : </Typography>
+                      </Grid2>
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography>
+                          {dayjs(startDttm).format("MMMM D, YYYY h:mm A")}{" "}
+                        </Typography>
+                      </Grid2>
+                    </Grid2>
+                    <Grid2
+                      container
+                      size={12}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography>End Date Time :</Typography>
+                      </Grid2>
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography>
+                          {dayjs(endDttm).format("MMMM D, YYYY h:mm A")}{" "}
+                        </Typography>
+                      </Grid2>
+                    </Grid2>
+                    <Grid2
+                      container
+                      size={12}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography>Selected Service :</Typography>
+                      </Grid2>
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography>
+                          {serviceDescription}
+                        </Typography>
+                      </Grid2>
+                    </Grid2>
+                    <Grid2
+                      container
+                      size={12}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography>Time Duration :</Typography>
+                      </Grid2>
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography>
+                          {timeDuration}
+                        </Typography>
+                      </Grid2>
+                    </Grid2>
+                    {/* <Typography>Service: {serviceDetails.filter(val=>val.id === service)}</Typography> */}
+                    <Divider sx={{ mb: "5px" }} />
+                    <Grid2
+                      container
+                      size={12}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography>Name:</Typography>
+                      </Grid2>
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography>{name}</Typography>
+                      </Grid2>
+                    </Grid2>
+                    <Grid2
+                      container
+                      size={12}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography>Email:</Typography>
+                      </Grid2>
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography>{email}</Typography>
+                      </Grid2>
+                    </Grid2>
+                    <Grid2
+                      container
+                      size={12}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography>Phone:</Typography>
+                      </Grid2>
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography>{phone}</Typography>
+                      </Grid2>
+                    </Grid2>
+                    <Grid2
+                      container
+                      size={12}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography>SL Resident:</Typography>
+                      </Grid2>
+                      <Grid2
+                        container
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography>{isSlResident}</Typography>
+                      </Grid2>
+                    </Grid2>
                   </Grid2>
-                  <Grid2 size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
-                    <Box
+                  <Grid2
+                    size={{ xs: 12, sm: 12, md: 6, lg: 6 }}
+                    sx={{ display: "flex", flexDirection: "column" }}
+                  >
+                    <Typography color="primary" sx={{ fontWeight: "600" }}>
+                      Booking Costs
+                    </Typography>
+                    <Divider sx={{ mb: "5px" }} />
+                    <Grid2
+                      container
+                      size={12}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Grid2
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography>Service Cost :</Typography>
+                      </Grid2>
+                      <Grid2
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography>{selectedServiceCost} LKR</Typography>
+                      </Grid2>
+                    </Grid2>
+
+                    {/* <Typography color="primary" sx={{ fontWeight: "600" }}>
+                      Additional Cost
+                    </Typography> */}
+                    <Divider sx={{ mb: "5px" }} />
+                    <Grid2
+                      container
+                      size={12}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Grid2
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography>Tennis Equipment :</Typography>
+                      </Grid2>
+                      <Grid2
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography>
+                          {isEquipmentsRequired === "Yes" ? 500 : 0} LKR
+                        </Typography>
+                      </Grid2>
+                    </Grid2>
+                    <Grid2
+                      container
+                      size={12}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Grid2
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography>Coaching Session :</Typography>
+                      </Grid2>
+                      <Grid2
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography>
+                          {isCoachingSessionsRequired === "Yes" ? 2000 : 0} LKR
+                        </Typography>
+                      </Grid2>
+                    </Grid2>
+                    <Grid2
+                      container
+                      size={12}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Grid2
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography>Flood Lights :</Typography>
+                      </Grid2>
+                      <Grid2
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography>
+                          {isFloodLightsRequired === "Yes" ? floodlightCost : 0} LKR
+                        </Typography>
+                      </Grid2>
+                    </Grid2>
+                    <Divider sx={{ mb: "5px" }} />
+                    <Grid2
+                      container
+                      size={12}
                       sx={{
-                        width: "90%",
-                        borderRadius: "10px",
-                        height: "150px",
                         display: "flex",
-                        justifyContent: "start",
-                        alignItems: "center",
-                        flexDirection: "column",
-                        backgroundColor: "darkgreen",
-                        padding: "20px",
-                        color: "lightgray",
+                        justifyContent: "space-between",
+                        mt: "20px",
                       }}
                     >
-                      <Typography variant="body1"></Typography>
-                      <Typography variant="body1"></Typography>
-                      <Typography variant="h3" mt={4}>
-                        Total : {totalCost} LKR
-                      </Typography>
-                    </Box>
+                      <Grid2
+                        size={6}
+                        sx={{ display: "flex", justifyContent: "start" }}
+                      >
+                        <Typography
+                          color="success"
+                          variant={{xs:"h6",sm:"h6",md:"h5",lg:"h5"}}
+                          style={{ fontWeight: "bold" }}
+                        >
+                          Total Amount :
+                        </Typography>
+                      </Grid2>
+                      <Grid2
+                        size={6}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Typography
+                          color="success"
+                          variant={{xs:"h6",sm:"h6",md:"h5",lg:"h5"}}
+                          style={{ fontWeight: "bold" }}
+                        >
+                          {totalCost} LKR
+                        </Typography>
+                      </Grid2>
+                    </Grid2>
                   </Grid2>
                 </Grid2>
               </>
@@ -461,7 +872,7 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
           </Box>
         </DialogContent>
         <DialogActions>
-          <Grid2 container size={12} p={2}>
+          <Grid2 container size={12} p={1}>
             <Grid2 size={6}>
               <Button
                 variant={step === 1 ? "outlined" : "contained"}
@@ -471,14 +882,14 @@ const CreateBooking = ({ openAddDialog, setOpenAddDialog, reload, setReload }) =
                 Back
               </Button>
             </Grid2>
-            <Grid2 size={6} sx={{display:'flex',justifyContent:'end'}}>
+            <Grid2 size={6} sx={{ display: "flex", justifyContent: "end" }}>
               <Button
                 variant={step === 3 ? "contained" : "contained"}
-                color={step === 3? "success":"primary"}
+                color={step === 3 ? "success" : "primary"}
                 // disabled={step === 3 ? true : false}
                 onClick={increaseSteps}
               >
-                {step===3?"Confirm Booking" : "Next"}
+                {step === 3 ? "Confirm Booking" : "Next"}
               </Button>
             </Grid2>
           </Grid2>
