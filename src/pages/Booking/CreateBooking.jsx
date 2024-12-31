@@ -298,7 +298,7 @@ const CreateBooking = ({
       }
     }
     if (step === 3) {
-      //submitBooking();
+      submitBooking();
     }
   };
   const decreaseSteps = () => {
