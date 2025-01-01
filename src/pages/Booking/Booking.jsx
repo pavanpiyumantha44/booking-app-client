@@ -18,6 +18,7 @@ const Booking = () => {
   const [selectedServiceDetails, setSelectedServiceDetails] = useState("");
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [bookings, setBookings] = useState([]);
+  const [avilableBookings,setAvailableBookings] = useState([]);
   const [reload,setReload] = useState(false);
 
   useEffect(() => {
@@ -43,15 +44,6 @@ const Booking = () => {
       try {
         const bookingsResponse = await getAllBookings();
         if (bookingsResponse.success) {
-          // const data = await bookingsResponse.bookings.map((booking) => ({
-          //   id: booking._id,
-          //   startDttm: booking.startDttm,
-          //   endDttm: booking.endDttm,
-          //   clientName : booking.clientId.name,
-          //   clientEmail : booking.clientId.email,
-          //   clientPhone : booking.clientId.phone,
-          //   service: booking.booking.serviceId.providedService,
-          // }));
           const data = await bookingsResponse.bookings.map((booking) => ({
             id: booking._id,
             start: dayjs(booking.startDttm).toDate(),
@@ -60,9 +52,10 @@ const Booking = () => {
             clientName : booking.clientId.name,
             clientEmail : booking.clientId.email,
             clientPhone : booking.clientId.phone,
+            serviceId: booking.serviceId._id,
             color: getRandomColor(),
           }));
-          setBookings(data);
+          setAvailableBookings(data);
         }
       } catch (error) {
         console.log(error);
@@ -80,13 +73,18 @@ const Booking = () => {
     }
     return color;
   };
+  const filterBookingList = (id) =>{
+    const filteredBookings = avilableBookings.filter(booking=>booking.serviceId === selectedServiceDetails);
+    //console.log(filteredBookings);
+    setBookings(filteredBookings);
+  }
   
   return (
     <>
       <NavBar />
       <Box
         sx={{
-          height: "100vh",
+          height: {xs:"110vh",sm:"110vh",md:"100vh",lg:'100vh'},
           display: "flex",
           flexDirection: "column",
           marginBottom:'4%'
@@ -139,7 +137,7 @@ const Booking = () => {
               sx={{ height: "50px", display: "flex", alignItems: "center" }}
               my={2}
             >
-              <Button variant="contained" color="primary">
+              <Button variant="contained" color="primary" onClick={filterBookingList}>
                 Filter
               </Button>
             </Grid2>
@@ -165,7 +163,7 @@ const Booking = () => {
           }}
         >
           <CreateBooking openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} reload={reload} setReload={setReload}/>
-          <BigCalendar bookingList={bookings}/>
+          <BigCalendar bookingList={bookings.length===0?avilableBookings:bookings}/>
         </Box>
       </Box>
       <Footer />

@@ -78,7 +78,7 @@ export default function BigCalendar({bookingList}) {
       <div style={{ height: '60vh',width:'100%',marginTop:'5%' }}>
         <Calendar
           defaultDate={defaultDate}
-          defaultView={Views.WEEK}
+          defaultView={Views.MONTH}
           events={bookingList}
           localizer={localizer}
           onSelectEvent={handleSelectEvent}

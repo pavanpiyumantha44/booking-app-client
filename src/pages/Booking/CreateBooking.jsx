@@ -25,6 +25,8 @@ import { addClient } from "../../services/clientService";
 import { addBooking, getAllBookings } from "../../services/bookingService";
 import {
   validateBooking,
+  validateEmail,
+  validateMobileNumber,
   validateOverlapBookings,
 } from "../../validations/validation";
 
@@ -205,7 +207,7 @@ const CreateBooking = ({
   };
 
   const submitBooking = async () => {
-    const isClientSaved = addNewClient();
+    const isClientSaved = await addNewClient();
     if (isClientSaved) {
       if (isCoachingSessionsRequired === "") {
         setIsCoachingSessionsRequired("No");
@@ -268,20 +270,13 @@ const CreateBooking = ({
         !validateOverlapBookings(startDttm, endDttm, availableBookings, service)
           .isValid
       ) {
-        setErrorMsg(
-          validateOverlapBookings(
-            startDttm,
-            endDttm,
-            availableBookings,
-            service
-          ).message
-        );
+        setErrorMsg("This time slot is already taken. Please choose a different time or a tennis court.");
       } else {
         if (
           isSlResident === "No" &&
           (isEquipmentsRequired === "" || isCoachingSessionsRequired === "")
         ) {
-          setErrorMsg("Please Fill All the fields");
+          setErrorMsg("Please fill all the fields");
         } else {
           setErrorMsg("");
           setStep(step + 1);
@@ -291,8 +286,13 @@ const CreateBooking = ({
     if (step === 2) {
       setErrorMsg("");
       if (name === "" || email === "" || phone === "") {
-        setErrorMsg("Please Fill All the fields");
-      } else {
+        setErrorMsg("Please fill all the fields");
+      }else if(!validateEmail(email)){
+        setErrorMsg("Email is not valid!");
+      }else if(!validateMobileNumber(phone)){
+        setErrorMsg("Mobile number is not valid!");
+      }
+      else {
         setTotalCost(handleCost(service));
         setStep(step + 1);
       }

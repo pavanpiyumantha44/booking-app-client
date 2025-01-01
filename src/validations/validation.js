@@ -1,5 +1,19 @@
 import dayjs from "dayjs";
 
+
+// Function to validate email
+function validateEmail(email) {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(email);
+}
+
+// Function to validate mobile number
+function validateMobileNumber(mobileNumber) {
+  const mobileRegex = /^[0-9]{10}$/; 
+  return mobileRegex.test(mobileNumber);
+}
+
+
 const validateBooking = (startDttm, endDttm) => {
     const startDateTime = dayjs(startDttm);
     const endDateTime = dayjs(endDttm);
@@ -37,22 +51,22 @@ const validateBooking = (startDttm, endDttm) => {
   };
 
 const validateOverlapBookings = (startDttm, endDttm, availableBookings,serviceId) => {
-    const startDateTime = dayjs(startDttm);
-    const endDateTime = dayjs(endDttm);
+    const startDateTime = dayjs(startDttm.toString());
+    const endDateTime = dayjs(endDttm.toString());
+    
     const hasOverlap = availableBookings.some((booking) => {
-        const existingStart = dayjs(booking.startDttm);
-        const existingEnd = dayjs(booking.endDttm);
+        const existingStart = dayjs(booking.start);
+        const existingEnd = dayjs(booking.end);
         return (
           booking.serviceId === serviceId &&
           startDateTime.isBefore(existingEnd) &&
           endDateTime.isAfter(existingStart)
         );
       });
-      
     if (hasOverlap) {
         return { isValid: false, message: "This time slot is already taken. Please choose a different time or a tennis court."};
     }else{
         return { isValid: true, message: "Booking is valid." };
     }
 }
-  export {validateBooking, validateOverlapBookings};
+export {validateEmail,validateMobileNumber,validateBooking, validateOverlapBookings};
