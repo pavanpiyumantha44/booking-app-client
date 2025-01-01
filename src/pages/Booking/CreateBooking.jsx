@@ -207,8 +207,8 @@ const CreateBooking = ({
   };
 
   const submitBooking = async () => {
-    const isClientSaved = await addNewClient();
-    if (isClientSaved) {
+    // const isClientSaved = await addNewClient();
+    // if (isClientSaved) {
       if (isCoachingSessionsRequired === "") {
         setIsCoachingSessionsRequired("No");
       }
@@ -240,7 +240,7 @@ const CreateBooking = ({
       } catch (error) {
         console.log(error);
       }
-    }
+    //}
   };
 
   const clearFields = () => {
@@ -293,6 +293,7 @@ const CreateBooking = ({
         setErrorMsg("Mobile number is not valid!");
       }
       else {
+        addNewClient();
         setTotalCost(handleCost(service));
         setStep(step + 1);
       }
@@ -840,7 +841,7 @@ const CreateBooking = ({
                       >
                         <Typography
                           color="success"
-                          variant={{xs:"h6",sm:"h6",md:"h5",lg:"h5"}}
+                          variant={"h6"}
                           style={{ fontWeight: "bold" }}
                         >
                           Total Amount :
@@ -856,7 +857,7 @@ const CreateBooking = ({
                       >
                         <Typography
                           color="success"
-                          variant={{xs:"h6",sm:"h6",md:"h5",lg:"h5"}}
+                          variant={"h6"}
                           style={{ fontWeight: "bold" }}
                         >
                           {totalCost} LKR
