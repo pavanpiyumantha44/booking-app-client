@@ -85,7 +85,7 @@ const Booking = () => {
       <NavBar />
       <Box
         sx={{
-          height: {xs:"110vh",sm:"110vh",md:"100vh",lg:'100vh'},
+          height: {xs:"120vh",sm:"120vh",md:"100vh",lg:'100vh'},
           display: "flex",
           flexDirection: "column",
           marginBottom:'4%'
