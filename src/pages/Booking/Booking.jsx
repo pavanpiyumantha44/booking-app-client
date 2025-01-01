@@ -150,6 +150,9 @@ const Booking = () => {
                   Add booking
                 </Button>
               </Grid2>
+              <Box sx={{display:'flex',justifyContent:'center',alignItems:'center',width:"100%"}}>
+              {avilableBookings.length===0?<progress/>:""}
+              </Box>
             </Grid2>
         </Box>
         <Box
