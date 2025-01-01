@@ -12,6 +12,7 @@ import { getAllServiceDetails } from "../../services/serviceDetailsService";
 import CreateBooking from "./CreateBooking";
 import { getAllBookings } from "../../services/bookingService";
 import dayjs from "dayjs";
+import Progress from '../../components/Progress';
 
 const Booking = () => {
   const [serviceDetails, setServiceDetails] = useState([]);
@@ -151,7 +152,6 @@ const Booking = () => {
                 </Button>
               </Grid2>
               <Box sx={{display:'flex',justifyContent:'center',alignItems:'center',width:"100%"}}>
-              {avilableBookings.length===0?<progress/>:""}
               </Box>
             </Grid2>
         </Box>
@@ -166,7 +166,7 @@ const Booking = () => {
           }}
         >
           <CreateBooking openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} reload={reload} setReload={setReload}/>
-          <BigCalendar bookingList={bookings.length===0?avilableBookings:bookings}/>
+          {avilableBookings.length===0?<Progress/>:<BigCalendar bookingList={bookings.length===0?avilableBookings:bookings}/>}
         </Box>
       </Box>
       <Footer />
