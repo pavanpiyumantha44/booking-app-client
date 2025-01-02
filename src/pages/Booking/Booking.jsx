@@ -85,7 +85,7 @@ const Booking = () => {
       <NavBar />
       <Box
         sx={{
-          height: {xs:"120vh",sm:"120vh",md:"100vh",lg:'100vh'},
+          height: {xs:"120vh",sm:"120vh",md:"110vh",lg:'110vh'},
           display: "flex",
           flexDirection: "column",
           marginBottom:'4%'
@@ -166,7 +166,7 @@ const Booking = () => {
           }}
         >
           <CreateBooking openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} reload={reload} setReload={setReload}/>
-          {avilableBookings.length===0?<Progress/>:<BigCalendar bookingList={bookings.length===0?avilableBookings:bookings}/>}
+          <BigCalendar bookingList={bookings.length===0?avilableBookings:bookings}/>
         </Box>
       </Box>
       <Footer />

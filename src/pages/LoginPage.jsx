@@ -82,7 +82,7 @@ const LoginPage = () => {
               sx={{
                 boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
                 padding: "40px 40px 100px 40px",
-                height: "35%",
+                height: {xs:"235px",sm:"235px",md:"250px",lg:"250px"},
                 width: "50%",
                 margin: "auto",
                 backgroundColor: "white",

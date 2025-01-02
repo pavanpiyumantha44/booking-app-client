@@ -68,13 +68,13 @@ const AboutUs = () => {
             </Box>
             <Grid2 container size={12} sx={{width:'100%'}}>
               <Grid2 size={{xs:12,sm:12,md:4,lg:4}} sx={{display:'flex',justifyContent:'center', height:'430px',padding:'10px'}}>
-                <ServiceCard url={TennisCourtImg} title={"Tennis"} description={"We are providing three tennis courts with different price ranges"}/>
+                <ServiceCard url={TennisCourtImg} title={"Tennis"} description={"We are providing tennis courts, coaching sessions with equipments and attractive packages"}/>
               </Grid2>
               <Grid2 size={{xs:12,sm:12,md:4,lg:4}} sx={{display:'flex',justifyContent:'center', height:'430px',padding:'10px'}}>
-                <ServiceCard url={TableTennisImg} title={"Table Tennis"} description={"We are providing two table tennis tables with different price ranges"}/>
+                <ServiceCard url={TableTennisImg} title={"Table Tennis"} description={"We are providing  table tennis tables with equipments and attractive packages"}/>
               </Grid2>
               <Grid2 size={{xs:12,sm:12,md:4,lg:4}} sx={{display:'flex',justifyContent:'center', height:'430px',padding:'10px'}}>
-                <ServiceCard url={SnookerImg} title={"Snooker"} description={"We are providing two snooker tables with different price ranges"}/>
+                <ServiceCard url={SnookerImg} title={"Snooker"} description={"We are providing snooker tables with attractive packages"}/>
               </Grid2>
             </Grid2>
         </Grid2>
